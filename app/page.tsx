@@ -251,17 +251,7 @@ export default function Home() {
                 )}
 
                 <div className="pt-2 flex items-center justify-between">
-                  <span className="text-xs text-emerald-400 font-medium">✓ Direkt auf train4free gelernt</span>
-                  {results.primary_recommendation.url && (
-                    <a
-                      href={results.primary_recommendation.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-sky-400 hover:underline"
-                    >
-                      Optionale Original-Quelle öffnen →
-                    </a>
-                  )}
+                  <span className="text-xs text-emerald-400 font-medium">✓ Direkt auf train4free verinnerlicht &amp; gelernt</span>
                 </div>
               </div>
             )}
