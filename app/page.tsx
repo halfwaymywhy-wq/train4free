@@ -2,39 +2,39 @@
 
 import React, { useState } from 'react';
 
-// Handverlesene Highlight-Trainings als Fallback und Startseiten-Inspiration
+// Handverlesene Highlight-Trainings von zertifizierten Trägern & Instituten
 const FEATURED_COURSES = [
   {
+    id: 'vhs-deutsch',
+    title: 'vhs-Lernportal: Deutsch & Berufssprachkurse',
+    provider: 'Deutscher Volkshochschul-Verband (Staatlich gefördert)',
+    duration: 'A1 bis C1 (Selbstlernkurs)',
+    badge: '🏛️ Offiziell & Zertifiziert',
+    category: 'Sprache & Integration',
+    description: 'Vollständig kostenlose, werbefreie Online-Kurse von A1 bis C1 inklusive Vorbereitung auf den Deutsch-Test für den Beruf (DTB).',
+    url: 'https://www.vhs-lernportal.de',
+    icon: '🇩🇪'
+  },
+  {
     id: 'harvard-cs50',
-    title: 'CS50: Computer Science & Programming',
-    provider: 'Harvard University',
+    title: 'CS50: Introduction to Computer Science',
+    provider: 'Harvard University / edX Free Audit',
     duration: 'Ca. 12 Std (Selbststudium)',
-    badge: '🏆 Elite-Klassiker',
+    badge: '🏆 Akademischer Klassiker',
     category: 'Tech & Code',
-    description: 'Der weltweit beste Einführungskurs in Algorithmen, Denken wie ein Programmierer und Informatik-Grundlagen. Komplett frei zugänglich.',
+    description: 'Der weltweit rennommierteste Einführungskurs in Informatik und Algorithmen. Komplett gebührenfrei zugänglich.',
     url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science',
     icon: '🏛️'
   },
   {
-    id: 'pixar-storytelling',
-    title: 'Pixar in a Box: The Art of Storytelling',
-    provider: 'Khan Academy / Pixar',
-    duration: '2-4 Stunden',
-    badge: '🎨 Creative Champion',
-    category: 'Softskills & Creative',
-    description: 'Lerne direkt von den Machern von Toy Story und Findet Nemo, wie man fesselnde Charaktere, Welten und Geschichten baut.',
-    url: 'https://www.khanacademy.org/computing/pixar/storytelling',
-    icon: '🎬'
-  },
-  {
-    id: 'google-prompt-engineering',
-    title: 'Prompt Engineering & Prompting Guide',
-    provider: 'DAIR.AI / Open Access',
-    duration: '45 Minuten Quick-Start',
-    badge: '⚡ KI Top-Skill',
-    category: 'AI & Future Skills',
-    description: 'Masterclass für effektive Prompts. Lerne, wie du KI-Modelle wie Gemini oder ChatGPT wie ein Profi steuerst.',
-    url: 'https://www.promptingguide.ai/de',
+    id: 'openhpi-ki',
+    title: 'Lernen mit KI & Digital Governance',
+    provider: 'Hasso-Plattner-Institut (OpenHPI)',
+    duration: '2-4 Stunden (Mit Zertifikat)',
+    badge: '📜 Deutsches Institut',
+    category: 'AI & Zukunftsskills',
+    description: 'Verifizierte Online-Kurse des HPI mit optionalem kostenfreien Leistungsnachweis für Beruf und Weiterbildung.',
+    url: 'https://open.hpi.de',
     icon: '🧠'
   }
 ];
@@ -43,122 +43,93 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [expandedStep, setExpandedStep] = useState<number | null>(0); // Erstes Modul standardmäßig offen
   const [completedSteps, setCompletedSteps] = useState<{ [key: number]: boolean }>({});
-  const [openStep, setOpenStep] = useState<number | null>(0); // Erstes Modul standardmäßig offen
 
-  const toggleStepDone = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation(); // Verhindert Auf-/Zuklappen beim Klick auf den Haken
-    setCompletedSteps(prev => ({ ...prev, [index]: !prev[index] }));
-  };
-
-  const toggleStepOpen = (index: number) => {
-    setOpenStep(prev => (prev === index ? null : index));
-  };
-
-  const handleSearch = async (searchQuery?: string) => {
+  const handleSearch = (searchQuery?: string) => {
     const q = searchQuery || query;
     if (!q.trim()) return;
 
     setLoading(true);
     setResults(null);
     setCompletedSteps({});
-    setOpenStep(0); // Öffne Modul 1 automatisch
+    setExpandedStep(0);
 
-    // Dynamischer, tiefgehender Generator für echte Lerninhalte
+    const lowerQ = q.toLowerCase();
+
     setTimeout(() => {
-      const lowerQ = q.toLowerCase();
-      
-      let title = `Mikro-Training: ${q}`;
-      let summary = `Willkommen zu deinem Intensiv-Training für "${q}". Wir haben die wichtigsten Prinzipien, praxisnahe Erklärungen und konkrete Handlungsschritte direkt aufbereitet.`;
-      
+      let title = `Mikro-Training & Zertifizierte Ressourcen: "${q}"`;
+      let provider = '🏛️ Öffentlicher / Zertifizierter Bildungsträger';
+      let summary = `Wir haben die verifiziertesten, gebührenfreien Bildungsressourcen und staatlich anerkannten Zugänge für "${q}" zusammengestellt.`;
+      let resource_url = '';
+      let resource_label = 'Zur offiziellen Plattform →';
+
       let steps = [
         {
-          title: `1. Die Kernfundamente & Grundlagen von ${q}`,
-          detail: `Um ${q} wirklich zu verstehen, musst du das zugrundeliegende Prinzip erfassen.`,
-          fullContent: `Hier ist die Kernidee von ${q} auf den Punkt gebracht:\n\n• Was es ist: ${q} beschreibt die systematische Auseinandersetzung mit den Grundregeln dieses Themas.\n• Warum es wichtig ist: Wer die Grundlagen beherrscht, vermeidet 80% der typischen Anfängerfehler.\n• Praxistipp: Versuche nicht sofort alles perfekt zu machen, sondern konzentriere dich zuerst auf die Basis-Mechaniken.`,
-          example: `Denke an ein Fundament beim Hausbau: Ohne stabile Basis bricht das beste Wissen später zusammen.`
+          title: `1. Grundlagen & Kernkonzepte zu ${q}`,
+          detail: 'Verstehe die wichtigsten wissenschaftlichen und praktischen Basis-Prinzipien.',
+          fullContent: `• Definition & Ziel: Analyse der Schlüsselkonzepte von ${q}.\n• Methodik: Strukturierte Herangehensweise zur Vermeidung typischer Anfängerfehler.\n• Kernprinzip: Erst Theorie verstehen, dann direkt in kleiner Praxisaufgabe anwenden.`,
+          example: `Erstelle eine kurze Checkliste mit 3 Punkten, wie du ${q} heute in deinen Alltag integrieren kannst.`
         },
         {
-          title: `2. Schritt-für-Schritt Anwendung im Alltag`,
-          detail: `Wie du ${q} konkret in deinem Tagesablauf umsetzt.`,
-          fullContent: `Konkreter Aktionsplan für ${q}:\n\n1. Identifiziere dein Ziel für heute bezüglich ${q}.\n2. Zerlege die Aufgabe in ein Mini-Häppchen von maximal 10 Minuten.\n3. Führe diese Mini-Handlung direkt aus, bevor Ablenkungen entstehen.\n4. Reflektiere kurz, was gut funktioniert hat.`,
-          example: `Beispiel: Statt dir vorzunehmen "Ich beherrsche ${q} komplett", mache heute nur die ersten 5 Minuten der praktischen Übung.`
+          title: `2. Praktische Schritt-für-Schritt Anwendung`,
+          detail: 'Konkrete Übungsszenarien für den direkten Transfer.',
+          fullContent: `• Schritt A: Bestimme dein konkretes Lernziel für diesen Bereich.\n• Schritt B: Nutze kostenfreie, zertifizierte Lehrmaterialien anstelle von Werbevideos.\n• Schritt C: Reflektiere deine Ergebnisse nach jeder Einheit.`,
+          example: 'Wende die Methode in einer 15-minütigen Fokus-Session an.'
         },
         {
-          title: `3. Erfolgs-Check & Selbstreflexion`,
-          detail: `Überprüfe, ob du das Thema verinnerlicht hast.`,
-          fullContent: `Testfrage für dich:\n\nKannst du einem 10-jährigen Kind in 2 einfachen Sätzen erklären, was ${q} ist und warum es nützlich ist?\n\nWenn ja: Du hast das Thema gemeistert!\nWenn nein: Lies dir Modul 1 noch einmal in Ruhe durch.`,
-          example: `Echtes Verständnis zeigt sich nicht an komplizierten Fachwörtern, sondern an einfachen Erklärungen.`
+          title: `3. Zertifizierung & Fortgeschrittene Vertiefung`,
+          detail: 'Anschließende Pfade bei offiziellen Bildungsträgern.',
+          fullContent: `• Öffentliche Angebote: Nutze Kurse von Universitäten, der VHS oder anerkannten Instituten.\n• Leistungsnachweis: Prüfe, ob kostenfreie Teilnahmebestätigungen oder Audits verfügbar sind.`,
+          example: 'Nutze den offiziellen Link unten, um dich direkt beim akkreditierten Träger einzuschreiben.'
         }
       ];
 
-      if (lowerQ.includes('persönlich') || lowerQ.includes('mindset') || lowerQ.includes('entwicklung')) {
-        title = 'Persönlichkeitsentwicklung & Growth Mindset';
-        summary = 'Echte Persönlichkeitsentwicklung passiert nicht durch passives Lesen, sondern durch gezielte Verhaltensänderungen, Selbstreflexion und mentale Frameworks.';
+      // Priorisierung staatlicher / öffentlicher / zertifizierter Träger nach Themen
+      if (lowerQ.includes('deutsch') || lowerQ.includes('integration') || lowerQ.includes('bamf') || lowerQ.includes('sprache') || lowerQ.includes('vhs')) {
+        title = 'Staatlich geförderte Integrations- & Deutschkurse (BAMF / DVV)';
+        provider = '🏛️ BAMF & Deutscher Volkshochschul-Verband (DVV)';
+        summary = 'Angebote von offiziellen Trägern (BAMF, VHS, Goethe-Institut, Deutsche Welle). Diese Kurse sind für Bürgergeld-Empfänger und Arbeitsuchende vollständig gebührenfrei.';
+        resource_url = 'https://www.vhs-lernportal.de';
+        resource_label = 'Kostenlos im vhs-Lernportal starten →';
         steps = [
           {
-            title: '1. Das Growth Mindset (Carol Dweck)',
-            detail: 'Verstehe den Unterschied zwischen starrem und dynamischem Denken.',
-            fullContent: `• Fixed Mindset ("Statisch"): Glaubt, dass Talent angeboren ist. Fehler werden als persönliches Scheitern erlebt.\n• Growth Mindset ("Dynamisch"): Glaubt, dass Fähigkeiten durch Übung wachsen. Fehler sind wertvolles Feedback des Gehirns.\n\nMerksatz: Ersetze das Wort "Ich kann das nicht" immer durch "Ich kann das NOCH nicht".`,
-            example: 'Wenn etwas schiefgeht: Sag nicht "Ich bin zu blöd dafür", sondern "Interessant, was kann ich daraus lernen?"'
+            title: '1. vhs-Lernportal (Vollständig Kostenlos von A1 bis C1)',
+            detail: 'Offizielle Lernplattform des Deutschen Volkshochschul-Verbandes.',
+            fullContent: `• Umfang: Werbefreie Deutschkurse (A1, A2, B1, B2, C1), Schreibförderung und Berufssprachkurse.\n• Zertifikat: Bereitet direkt auf den "Deutsch-Test für den Beruf" (DTB) und offizielles B1/B2 Zertifikat vor.\n• Betreuung: Kostenfreie Tutorinnen und Tutoren korrigieren Übungen online.`,
+            example: 'Registriere dich direkt auf vhs-lernportal.de, um ohne Wartezeit und komplett kostenlos mit dem Lernen zu starten.'
           },
           {
-            title: '2. Atomic Habits: Die 1%-Methode',
-            detail: 'Warum kleine tägliche Verbesserungen gigantische Ergebnisse liefern.',
-            fullContent: `Vergiss riesige Neujahrsvorsätze. Wenn du dich jeden Tag nur um 1% verbesserst, bist du am Ende des Jahres 37-mal besser (1.01^365 = 37.8).\n\nSo baust du Habits auf:\n1. Mach es offensichtlich (Lernmaterial auf den Tisch legen).\n2. Mach es attraktiv (Mit Kaffee oder Lieblingsmusik koppeln).\n3. Mach es einfach (Nur 2 Minuten starten).`,
-            example: 'Lieber jeden Tag 5 Minuten konzentriert lernen als einmal im Monat 3 Stunden quälen.'
+            title: '2. BAMF-Integrationskurse & Berufssprachkurse (Gefördert)',
+            detail: 'Offizielle Präsenz- und Onlinekurse mit anerkanntem Zertifikat.',
+            fullContent: `• Integrationskurse: 600 Std. Sprachkurs + 100 Std. Orientierungskurs (Politik/Kultur).\n• Kostenübernahme: Für Bürgergeld-Empfänger, Geflüchtete und Arbeitsuchende zu 100% kostenlos über das Jobcenter / Agentur für Arbeit.\n• Zertifizierte Träger: VHS, WBS Training, BBQ, Caritas, Diakonie.`,
+            example: 'Frage dein Jobcenter nach einer Verpflichtung/Berechtigung für einen BAMF-Integrationskurs.'
           },
           {
-            title: '3. Fokus schützen & Ablenkungen eliminieren',
-            detail: 'Mentale Energie sparen und produktiv bleiben.',
-            fullContent: `Social Media und ständige Benachrichtigungen zerstückeln deine Konzentration. Echtes Lernen erfordert Deep Work (tiefes Arbeiten).\n\nÜbung für heute:\nSchalte dein Smartphone für die nächsten 20 Minuten in den Flugmodus und mache nur dieses eine Mikro-Training fertig.`,
-            example: 'Fokus ist keine Frage des Wollens, sondern der Gestaltung deiner Umgebung.'
+            title: '3. Deutsche Welle & Goethe-Institut (Zusatzmaterial)',
+            detail: 'Hochwertige Multimedia-Angebote öffentlich-rechtlicher Träger.',
+            fullContent: `• Deutsche Welle (DW): Interaktive Telenovela "Nicos Weg" und Sprachkurse von A1 bis C1.\n• Goethe-Institut: Community "Deutsch für Dich" mit kostenfreien Übungen und Foren.`,
+            example: 'Ideal zur täglichen Ergänzung neben dem Hauptkurs.'
           }
         ];
-      } else if (lowerQ.includes('onboard') || lowerQ.includes('einarbeitung') || lowerQ.includes('hr')) {
-        title = 'Exzellentes Onboarding & Einarbeitung';
-        summary = 'Ein gelungenes Onboarding entscheidet in den ersten 90 Tagen über Motivation, Bindung und Produktivität neuer Teammitglieder.';
+      } else if (lowerQ.includes('code') || lowerQ.includes('python') || lowerQ.includes('informatik') || lowerQ.includes('web') || lowerQ.includes('programmieren')) {
+        title = 'Zertifizierte Informatik- & Programmierkurse';
+        provider = '🏛️ Harvard / OpenHPI / MIT OpenCourseWare';
+        summary = 'Akademisch fundierte Informatik-Einführungen von Spitzenuniversitäten – frei zugänglich ohne Paywall.';
+        resource_url = 'https://open.hpi.de';
+        resource_label = 'Zu den OpenHPI Kursen →';
         steps = [
           {
-            title: '1. Die 3 Phasen: Preboarding, Tag 1 & Erster Monat',
-            detail: 'Strukturierter Fahrplan vom Arbeitsvertrag bis zur Selbstständigkeit.',
-            fullContent: `• Preboarding (Vor Tag 1): Hardware, Zugänge und Willkommens-Mail vorab schicken. Das nimmt die Nervosität.\n• Tag 1 (Ankommen): Fokus auf Kultur, Begrüßung und Team – keine stundenlangen Bürokratie-Formulare!\n• Monat 1 (Autonomie): Schrittweise eigene Verantwortung übergeben mit wöchentlichen Feedback-Gesprächen.`,
-            example: 'Ein neuer Mitarbeiter, der am ersten Tag vor einem nicht funktionierenden Laptop sitzt, verliert 50% der Motivation.'
+            title: '1. OpenHPI (Hasso-Plattner-Institut - Deutschland)',
+            detail: 'Deutsche Online-Kurse mit verifizierten Zertifikaten.',
+            fullContent: `• Kurse zu Python, IT-Sicherheit, KI und Datenanalyse.\n• Interaktive Programmieraufgaben direkt im Browser mit automatischer Auswertung.`,
+            example: 'Starte den Kurs "Lernen mit Python" auf open.hpi.de.'
           },
           {
-            title: '2. Das Buddy-System installieren',
-            detail: 'Warum jeder Neuling einen Mentor auf Augenhöhe braucht.',
-            fullContent: `Stelle dem neuen Teammitglied einen "Buddy" an die Seite.\n\n• Wer ist das? Ein Kollege aus dem Team – explizit NICHT die Führungskraft.\n• Wozu dient das? Für all die "dummen Fragen" (Wo gibt es den besten Kaffee? Wie buche ich Urlaub?), die man dem Chef ungern stellt.`,
-            example: 'Das Buddy-System baut Hemmungen ab und beschleunigt das soziale Einleben um Wochen.'
-          },
-          {
-            title: '3. Klarheit durch den 30-60-90-Tage-Plan',
-            detail: 'Erwartungen glasklar definieren.',
-            fullContent: `• Nach 30 Tagen: Der Neuling versteht die Werkzeuge und Prozesse.\n• Nach 60 Tagen: Erste eigene Teilprojekte werden selbstständig gelöst.\n• Nach 90 Tagen: Vollwertiges Teammitglied, das Feedback zur Optimierung gibt.`,
-            example: 'Regelmäßige Check-ins verhindern Frust auf beiden Seiten.'
-          }
-        ];
-      } else if (lowerQ.includes('python') || lowerQ.includes('programmieren') || lowerQ.includes('code')) {
-        title = 'Python Programmier-Fundament';
-        summary = 'Python ist die verständlichste und mächtigste Sprache für KI, Datenanalyse und Webentwicklung.';
-        steps = [
-          {
-            title: '1. Variablen & Datentypen verstehen',
-            detail: 'Wie Computer Werte im Speicher ablegen.',
-            fullContent: `In Python erstellst du Variablen einfach per Zuweisung:\n\nname = "Alex"      # String (Text)\nalter = 28         # Integer (Ganzzahl)\nis_student = True  # Boolean (Wahr/Falsch)\n\nPython erkennt den Datentyp automatisch!`,
-            example: 'Stell dir Variablen wie beschriftete Kisten vor, in die du Daten hineinlegst.'
-          },
-          {
-            title: '2. Bedingungen & Entscheidungen (if/else)',
-            detail: 'Wie dein Code intelligente Entscheidungen trifft.',
-            fullContent: `alter = 20\nif alter >= 18:\n    print("Zutritt gewährt")\nelse:\n    print("Zutritt verwehrt")\n\nWichtig: In Python ist das Einrücken (4 Leerzeichen) Pflicht!`,
-            example: 'Ohne Einrückung weiß Python nicht, welcher Code zum if-Block gehört.'
-          },
-          {
-            title: '3. Schleifen (Loops) & Funktionen',
-            detail: 'Code wiederverwenden und Aufgaben automatisieren.',
-            fullContent: `Funktion definieren:\ndef begrüße(name):\n    return "Hallo " + name\n\n# Funktion aufrufen:\nprint(begrüße("Lisa"))  # Gibt "Hallo Lisa" aus`,
-            example: 'Mit Funktionen musst du denselben Code nie zweimal schreiben.'
+            title: '2. Harvard CS50 (Informatik-Klassiker)',
+            detail: 'Der weltbeste Kurs für Algorithmen und Denkweisen.',
+            fullContent: `• Deckt C, Python, SQL, HTML/CSS und JavaScript ab.\n• Völlig kostenlos im Free-Audit-Modus auf edX oder der Harvard-Plattform.`,
+            example: 'Löse das erste Problemset auf cs50.harvard.edu.'
           }
         ];
       }
@@ -167,11 +138,12 @@ export default function Home() {
         mode_used: 'DIRECT_MICRO_LEARNING',
         primary_recommendation: {
           title,
-          provider: 'train4free Interactive Curriculum',
-          duration: '15 Min Sofort-Lerneinheit',
-          language: 'Deutsch',
+          provider,
+          duration: '15 Min Sofort-Lerneinheit + Offizieller Kurs-Zugang',
+          language: 'Deutsch / EN',
           summary,
-          resource_url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q + ' kostenloser kurs tutorial deutsch')}`,
+          resource_url,
+          resource_label,
           steps
         }
       });
@@ -179,11 +151,16 @@ export default function Home() {
     }, 200);
   };
 
+  const toggleStepCompleted = (index: number) => {
+    setCompletedSteps((prev) => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   const resetSearch = () => {
     setResults(null);
     setQuery('');
-    setCompletedSteps({});
-    setOpenStep(0);
   };
 
   return (
@@ -204,7 +181,7 @@ export default function Home() {
                 train<span className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">4free</span>
               </span>
               <span className="hidden sm:inline-block text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5 ml-2 font-medium">
-                100% Free &amp; No Paywalls
+                100% Free &amp; Zertifiziert
               </span>
             </div>
           </button>
@@ -212,7 +189,7 @@ export default function Home() {
           <div className="flex items-center space-x-3 text-sm">
             <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700/60 text-xs font-medium text-slate-300">
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-              <span>Powered by <strong className="text-white font-semibold">Instant AI Engine</strong></span>
+              <span>Prio: <strong className="text-white font-semibold">Öffentliche Bildungsträger</strong></span>
             </div>
           </div>
         </div>
@@ -220,7 +197,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
-        
         {/* Hero & Search Section */}
         <div className="text-center max-w-3xl mx-auto my-6 sm:my-10 space-y-6">
           <div className="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-300 shadow-inner">
@@ -229,14 +205,14 @@ export default function Home() {
           </div>
           
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight leading-tight">
-            Kostenloses Wissen.<br />
+            Geprüfte Weiterbildung.<br />
             <span className="bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              In Minuten konsumiert. 0% Paywalls.
+              Direkt auf deiner Plattform. 0% Paywalls.
             </span>
           </h1>
           
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
-            Gib einfach dein Wunschthema ein und lerne sofort direkt auf der Seite.
+            Finde sofort zertifizierte Kurse von Volkshochschulen, Instituten und Universitäten oder absolviere direkt ein interaktives train4free Mikro-Training.
           </p>
 
           {/* Search Box */}
@@ -247,7 +223,7 @@ export default function Home() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Was willst du heute lernen? (z.B. Persönlichkeitsentwicklung, Python, Zeitmanagement)..."
+                placeholder="Was willst du lernen? (z.B. Deutsch B1, Python, Prompting, Führung)..."
                 className="w-full bg-transparent px-4 py-2 text-sm text-slate-100 focus:outline-none placeholder-slate-500"
               />
               <button
@@ -256,7 +232,7 @@ export default function Home() {
                 disabled={loading}
                 className="bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md flex items-center space-x-2 shrink-0 disabled:opacity-50"
               >
-                {loading ? <span>Sucht...</span> : <span>Finden</span>}
+                {loading ? <span>Lädt...</span> : <span>Training finden</span>}
               </button>
             </div>
           </div>
@@ -264,10 +240,10 @@ export default function Home() {
           {/* Quick Filter Tags */}
           <div className="flex flex-wrap justify-center gap-2 pt-2">
             {[
-              "Persönlichkeitsentwicklung",
-              "Python Programmieren",
-              "Harvard CS50",
-              "Pixar Storytelling"
+              "Deutsch B1 / BAMF",
+              "vhs-Lernportal",
+              "Python OpenHPI",
+              "Harvard CS50"
             ].map((tag) => (
               <button
                 key={tag}
@@ -275,159 +251,126 @@ export default function Home() {
                 onClick={() => { setQuery(tag); handleSearch(tag); }}
                 className="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-full px-3 py-1.5 transition hover:border-sky-500/50"
               >
-                ⚡ {tag}
+                🏛️ {tag}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Live Search Results / Interactive Micro-Learning Card */}
-        {results && results.primary_recommendation && (
+        {/* Live Search Results */}
+        {results && (
           <div className="max-w-3xl mx-auto mt-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-sky-400 flex items-center gap-2">
-                <span>✨</span> train4free Interactive Module
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
+                ✨ train4free Mikro-Training
               </span>
               <button
                 type="button"
                 onClick={resetSearch}
-                className="text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg transition"
+                className="text-xs text-slate-400 hover:text-white"
               >
                 ✕ Schließen
               </button>
             </div>
 
-            <div className="space-y-4">
-              <h3 className="text-2xl font-extrabold text-white">
-                {results.primary_recommendation.title}
-              </h3>
-              
-              <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">🏛️ {results.primary_recommendation.provider}</span>
-                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">⏱️ {results.primary_recommendation.duration}</span>
-                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">🌍 {results.primary_recommendation.language}</span>
-              </div>
-
-              <p className="text-sm text-slate-300 leading-relaxed bg-slate-950/50 border border-slate-800/80 p-3.5 rounded-xl">
-                {results.primary_recommendation.summary}
-              </p>
-
-              {/* Empfohlene Gratis-Ressource */}
-              {results.primary_recommendation.resource_url && (
-                <div className="bg-slate-950 p-3.5 rounded-xl border border-sky-500/20 flex items-center justify-between gap-3">
-                  <div className="text-xs">
-                    <span className="font-bold text-sky-400 block">🎥 Empfohlener Gratis-Videokurs &amp; Ressourcen:</span>
-                    <span className="text-slate-400">Direkt auf geprüfte kostenlose Videokurse &amp; Materialien zugreifen.</span>
+            {results.primary_recommendation && (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-bold text-white">{results.primary_recommendation.title}</h3>
+                  <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-2">
+                    <span className="bg-slate-800 border border-slate-700 px-2 py-1 rounded-md">{results.primary_recommendation.provider}</span>
+                    <span className="bg-slate-800 border border-slate-700 px-2 py-1 rounded-md">⏱️ {results.primary_recommendation.duration}</span>
                   </div>
-                  <a
-                    href={results.primary_recommendation.resource_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg transition shrink-0"
-                  >
-                    Kurs öffnen →
-                  </a>
                 </div>
-              )}
 
-              {/* Interaktive Lernschritte */}
-              <div className="space-y-3 pt-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">
-                  Interaktive Lerneinheiten (Klicke zum Öffnen / Lesen):
-                </h4>
-                
-                {results.primary_recommendation.steps.map((step: any, idx: number) => {
-                  const isDone = completedSteps[idx];
-                  const isOpen = openStep === idx;
+                <p className="text-sm text-slate-300 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 leading-relaxed">
+                  {results.primary_recommendation.summary}
+                </p>
 
-                  return (
-                    <div
-                      key={idx}
-                      onClick={() => toggleStepOpen(idx)}
-                      className={`cursor-pointer rounded-xl border transition-all overflow-hidden ${
-                        isDone
-                          ? 'bg-emerald-950/20 border-emerald-500/30'
-                          : isOpen
-                          ? 'bg-slate-950 border-sky-500/60 shadow-lg'
-                          : 'bg-slate-950 border-slate-800 hover:border-slate-700'
-                      }`}
+                {/* Direkter Link zur zertifizierten Quelle falls vorhanden */}
+                {results.primary_recommendation.resource_url && (
+                  <div className="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-xl flex items-center justify-between">
+                    <span className="text-xs text-emerald-300 font-medium">Offizielles Bildungs-Portal verifiziert</span>
+                    <a
+                      href={results.primary_recommendation.resource_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg transition"
                     >
-                      {/* Modul Header */}
-                      <div className="p-4 flex items-start justify-between gap-3">
-                        <div className="space-y-1 pr-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-sky-400 font-mono font-bold">
-                              {isOpen ? '▼' : '►'}
-                            </span>
-                            <h5 className={`font-bold text-sm ${isDone ? 'line-through text-emerald-400' : 'text-slate-100'}`}>
+                      {results.primary_recommendation.resource_label}
+                    </a>
+                  </div>
+                )}
+
+                {/* Interaktive Lerneinheiten */}
+                <div className="space-y-3 pt-2">
+                  <h4 className="text-sm font-semibold text-slate-200">
+                    Interaktive Lerneinheiten (Klicke zum Lesen &amp; Abhaken):
+                  </h4>
+
+                  {results.primary_recommendation.steps.map((step: any, idx: number) => {
+                    const isExpanded = expandedStep === idx;
+                    const isCompleted = completedSteps[idx];
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`border rounded-xl transition-all ${
+                          isCompleted
+                            ? 'bg-emerald-950/20 border-emerald-800/50'
+                            : isExpanded
+                            ? 'bg-slate-800/60 border-sky-500/50'
+                            : 'bg-slate-950/40 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        {/* Header des Moduls */}
+                        <div
+                          className="p-4 flex items-start justify-between cursor-pointer"
+                          onClick={() => setExpandedStep(isExpanded ? null : idx)}
+                        >
+                          <div className="space-y-1">
+                            <h5 className={`font-bold text-sm ${isCompleted ? 'line-through text-emerald-400' : 'text-slate-100'}`}>
                               {step.title}
                             </h5>
+                            <p className="text-xs text-slate-400">{step.detail}</p>
                           </div>
-                          <p className="text-xs text-slate-400 leading-relaxed pl-4">
-                            {step.detail}
-                          </p>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleStepCompleted(idx);
+                            }}
+                            className={`ml-3 px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                              isCompleted
+                                ? 'bg-emerald-500 text-slate-950'
+                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                            }`}
+                          >
+                            {isCompleted ? '✓ Absolviert' : 'Als gelernt markieren'}
+                          </button>
                         </div>
 
-                        {/* Abhak-Button (Eigenständig) */}
-                        <button
-                          type="button"
-                          title={isDone ? 'Als unvollständig markieren' : 'Als verstanden / absolviert markieren'}
-                          onClick={(e) => toggleStepDone(e, idx)}
-                          className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 text-xs transition-transform active:scale-95 ${
-                            isDone
-                              ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-extrabold shadow-md shadow-emerald-500/20'
-                              : 'border-slate-700 bg-slate-900 text-slate-400 hover:border-sky-500'
-                          }`}
-                        >
-                          {isDone ? '✓' : idx + 1}
-                        </button>
-                      </div>
-
-                      {/* Aufklappbarer echter Lerninhalt */}
-                      {isOpen && (
-                        <div className="px-4 pb-4 pt-1 border-t border-slate-800/80 bg-slate-900/40 text-xs space-y-3 animate-fadeIn">
-                          <div className="whitespace-pre-line text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-lg border border-slate-800 font-sans">
-                            {step.fullContent}
-                          </div>
-
-                          {step.example && (
-                            <div className="bg-sky-500/10 border border-sky-500/20 p-2.5 rounded-lg text-sky-300">
-                              <strong className="block font-semibold text-sky-400">💡 Praxis-Beispiel:</strong>
-                              {step.example}
+                        {/* Ausgeklappter Rich-Content */}
+                        {isExpanded && (
+                          <div className="px-4 pb-4 pt-1 border-t border-slate-800/60 text-xs text-slate-300 space-y-3">
+                            <div className="whitespace-pre-line leading-relaxed text-slate-200 font-sans">
+                              {step.fullContent}
                             </div>
-                          )}
-
-                          <div className="flex justify-end pt-1">
-                            <button
-                              type="button"
-                              onClick={(e) => toggleStepDone(e, idx)}
-                              className={`text-xs px-3 py-1.5 rounded-md font-semibold transition ${
-                                isDone
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                  : 'bg-sky-500 hover:bg-sky-400 text-slate-950'
-                              }`}
-                            >
-                              {isDone ? '✓ Verstanden & Absolviert' : 'Modul als gelernt abhaken ✓'}
-                            </button>
+                            
+                            {step.example && (
+                              <div className="p-3 bg-slate-900 border border-slate-800 rounded-lg text-slate-300">
+                                <strong className="text-sky-400 font-semibold">💡 Praxis-Aufgabe:</strong> {step.example}
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-
-              {/* Status Footer */}
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-emerald-400 font-medium flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  100% On-Page Mikro-Training – Direkt lesen &amp; verinnerlichen
-                </span>
-                <span className="text-slate-500 font-mono">
-                  {Object.keys(completedSteps).filter(k => completedSteps[Number(k)]).length} / {results.primary_recommendation.steps.length} absolviert
-                </span>
-              </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -437,13 +380,13 @@ export default function Home() {
             <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
               <div>
                 <h2 className="text-lg font-bold text-white tracking-tight">
-                  Handverlesene Highlight-Trainings
+                  Öffentlich anerkannte &amp; Handverlesene Kurse
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Sofort starten ohne Registrierungshürden
+                  Sofort starten bei staatlichen und akademischen Trägern
                 </p>
               </div>
-              <span className="text-xs text-slate-500 font-mono">3 Top-Picks</span>
+              <span className="text-xs text-slate-500 font-mono">Top-Empfehlungen</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -470,12 +413,12 @@ export default function Home() {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">{course.provider}</span>
+                    <span className="text-slate-500 truncate max-w-[150px]">{course.provider}</span>
                     <a
                       href={course.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sky-400 font-semibold hover:underline"
+                      className="text-sky-400 font-semibold hover:underline shrink-0"
                     >
                       Starten →
                     </a>
