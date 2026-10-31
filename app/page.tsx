@@ -43,6 +43,11 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [completedSteps, setCompletedSteps] = useState<{ [key: number]: boolean }>({});
+
+  const toggleStep = (index: number) => {
+    setCompletedSteps(prev => ({ ...prev, [index]: !prev[index] }));
+  };
 
   const handleSearch = async (searchQuery?: string) => {
     const q = searchQuery || query;
@@ -50,52 +55,134 @@ export default function Home() {
 
     setLoading(true);
     setResults(null);
+    setCompletedSteps({});
 
-    // Echte, direkt aufbereite Mikro-Lernmodule direkt auf train4free (OHNE Google-Redirects)
+    // Dynamischer, robuster Generator für maßgeschneiderte Mikro-Lerneinheiten
     setTimeout(() => {
       const lowerQ = q.toLowerCase();
       
-      let recommendation = {
-        title: `Mikro-Training: ${q}`,
-        provider: 'train4free Direct-Curriculum',
-        duration: '15 Min Sofort-Lerneinheit',
-        language: 'Deutsch',
-        quality_score: '100% On-Page Inhalt',
-        why_it_fits: `Hier ist deine verifizierte Zusammenfassung und Lerneinheit zu "${q}" – direkt auf train4free für dich aufbereitet:`,
-        steps: [
-          '1. Das Kernkonzept: Die wichtigsten Grundlagen auf einen Blick verstehen.',
-          '2. Praktische Anwendung: So wendest du ' + q + ' Schritt für Schritt an.',
-          '3. Praxis-Check: Ein einfaches Beispiel zum direkten Nachmachen.'
-        ]
-      };
+      let title = `Mikro-Training: ${q}`;
+      let summary = `Willkommen zu deinem Intensiv-Training für "${q}". Wir haben die Kernprinzipien, Methoden und Praxis-Anwendungen direkt für dich aufbereitet.`;
+      
+      let steps = [
+        {
+          title: `1. Die Kernfundamente von ${q}`,
+          detail: `Verstehe die wichtigsten Grundlagen und Begrifflichkeiten von ${q}. Konzentriere dich auf die zentralen Konzepte, die den größten Impact haben.`
+        },
+        {
+          title: `2. Praktische Methodik & Schritt-für-Schritt Anwendung`,
+          detail: `Wende ${q} in der Praxis an. Erstelle konkrete Handlungsregeln oder Übungsszenarien für deinen Alltag.`
+        },
+        {
+          title: `3. Erfolgs-Check & Selbstreflexion`,
+          detail: `Prüfe dein Verständnis: Kannst du die Kernidee von ${q} in 2 Sätzen erklären und sofort in einem Praxisbeispiel nutzen?`
+        }
+      ];
 
-      if (lowerQ.includes('python')) {
-        recommendation = {
-          title: 'Python Crashkurs: Variablen, Loops & Funktionen',
-          provider: 'train4free Interactive Lab',
-          duration: '20 Min',
+      if (lowerQ.includes('persönlich') || lowerQ.includes('mindset') || lowerQ.includes('entwicklung')) {
+        title = 'Persönlichkeitsentwicklung & Growth Mindset';
+        summary = 'Echte Persönlichkeitsentwicklung passiert nicht durch passives Lesen, sondern durch gezielte Verhaltensänderungen, Selbstreflexion und mentale Frameworks.';
+        steps = [
+          {
+            title: '1. Das Growth Mindset (Carol Dweck)',
+            detail: 'Unterscheide zwischen Fixed Mindset ("Ich kann das halt nicht") und Growth Mindset ("Ich kann das noch nicht"). Fehler sind keine Schwächen, sondern nötige Lernsignale des Gehirns.'
+          },
+          {
+            title: '2. Atomic Habits: Die 1%-Methode',
+            detail: 'Setze dir nicht riesige Hürden, sondern baue Mikrogewohnheiten auf. Wer sich jeden Tag um 1% verbessert, ist nach einem Jahr 37-mal besser.'
+          },
+          {
+            title: '3. Radikale Ausmistung von Ablenkungen',
+            detail: 'Schütze deine mentale Energie. Limitiere passiven Social-Media-Konsum und ersetze ihn durch gezielte Reflexions- oder Fokussier-Zeiten.'
+          }
+        ];
+      } else if (lowerQ.includes('python') || lowerQ.includes('programmieren') || lowerQ.includes('code')) {
+        title = 'Python Programmier-Fundament';
+        summary = 'Python ist die verständlichste und mächtigste Sprache für KI, Datenanalyse und Webentwicklung.';
+        steps = [
+          {
+            title: '1. Variablen & Datentypen',
+            detail: 'Speichere Werte wie in Schubladen: name = "Alex" (Text/String), alter = 25 (Zahl/Integer). Python erkennt Typen automatisch.'
+          },
+          {
+            title: '2. Schleifen (Loops) & Bedingungen',
+            detail: 'Nutze "if"-Abfragen für Entscheidungen und "for"-Schleifen, um Aufgaben automatisch zu wiederholen ohne doppelten Code.'
+          },
+          {
+            title: '3. Funktionen schreiben',
+            detail: 'Bündele deine Logik mit "def mein_befehl():". So bleibt dein Programm sauber, wiederverwendbar und übersichtlich.'
+          }
+        ];
+      }
+
+      setResults({
+        mode_used: 'DIRECT_MICRO_LEARNING',
+        primary_recommendation: {
+          title,
+          provider: 'train4free Direct-Curriculum',
+          duration: '15 Min Sofort-Lerneinheit',
           language: 'Deutsch',
-          quality_score: '100% Sofort-Start',
-          why_it_fits: 'Verstehe die Grundpfeiler von Python in Rekordzeit direkt auf dieser Seite:',
+          summary,
+          steps
+        }
+      });
+      setLoading(false);
+    }, 200);
+  };
+
+      if (lowerQ.includes('persönlich') || lowerQ.includes('mindset') || lowerQ.includes('entwicklung')) {
+        recommendation = {
+          title: 'Persönlichkeitsentwicklung & Growth Mindset',
+          provider: 'train4free Masterclass',
+          duration: '15 Min Sofort-Lerneinheit',
+          language: 'Deutsch',
+          summary: 'Echte Persönlichkeitsentwicklung passiert nicht durch Ratgeber-Lesen, sondern durch gezielte Verhaltensänderungen und mentale Frameworks.',
           steps: [
-            '1. Variablen speichern Daten (z.B. name = "Coder")',
-            '2. Loops (for/while) automatisieren wiederholende Aufgaben.',
-            '3. Funktionen bündeln Logik mit def mein_code():'
-          ]
+            {
+              title: '1. Das Growth Mindset (Carol Dweck)',
+              detail: 'Unterscheide zwischen Fixed Mindset ("Ich kann das halt nicht") und Growth Mindset ("Ich kann das noch nicht"). Fehler sind keine Schwächen, sondern Feedback-Signale des Gehirns.'
+            },
+            {
+              title: '2. Atomic Habits: Die 1%-Methode',
+              detail: 'Setze dir nicht riesige Ziele, sondern baue Mikrogewohnheiten auf. Wer sich jeden Tag um 1% verbessert, ist nach einem Jahr 37-mal besser.'
+            },
+            {
+              title: '3. Radikale Ausmistung von Ablenkungen',
+              detail: 'Schütze deine mentale Energie. Limitiere passiven Social-Media-Konsum und ersetze ihn durch aktive Reflexion oder Fokussier-Zeiten.'
+            }
+          ],
+          quiz: {
+            question: 'Was beschreibt die 1%-Regel der Verhaltensänderung?',
+            options: ['Man muss jeden Tag 1 Stunde lesen', 'Kleine tägliche Gewohnheiten summieren sich langfristig zu massiven Erfolgen', 'Man konzentriert sich nur auf 1% seiner Fehler'],
+            correct: 1
+          }
         };
-      } else if (lowerQ.includes('excel') || lowerQ.includes('tabelle')) {
+      } else if (lowerQ.includes('python') || lowerQ.includes('programmieren') || lowerQ.includes('code')) {
         recommendation = {
-          title: 'Excel & Tabellen Turbo-Guide',
-          provider: 'train4free Office Academy',
-          duration: '15 Min',
+          title: 'Python Programmier-Fundament',
+          provider: 'train4free Code Lab',
+          duration: '20 Min Sofort-Lerneinheit',
           language: 'Deutsch',
-          quality_score: '99% Produktivitäts-Boost',
-          why_it_fits: 'Die wichtigsten Excel-Heuristiken direkt im Überblick:',
+          summary: 'Python ist die verständlichste und mächtigste Sprache für KI, Datenanalyse und Webentwicklung.',
           steps: [
-            '1. Nutze SVERWEIS oder XVERWEIS für blitzschnelle Datenabgleiche.',
-            '2. Pivot-Tabellen fassen tausende Zeilen in Sekunden zusammen.',
-            '3. Tastenkombination Strg + T wandelt Daten in smarte Tabellen um.'
-          ]
+            {
+              title: '1. Variablen & Datentypen',
+              detail: 'Speichere Werte wie in Schubladen: name = "Alex" (Text/String), alter = 25 (Zahl/Integer). Python erkennt Typen automatisch.'
+            },
+            {
+              title: '2. Schleifen (Loops) & Bedingungen',
+              detail: 'Nutze "if"-Abfragen für Entscheidungen und "for"-Schleifen, um Aufgaben 100-mal automatisch zu wiederholen ohne doppelten Code.'
+            },
+            {
+              title: '3. Funktionen schreiben',
+              detail: 'Bündele deine Logik mit "def mein_befehl():". So bleibt dein Programm sauber, wiederverwendbar und übersichtlich.'
+            }
+          ],
+          quiz: {
+            question: 'Wozu dient eine "if"-Bedingung im Code?',
+            options: ['Um das Programm zu beenden', 'Um Entscheidungen basierend auf logischen Bedingungen zu treffen', 'Um Bilder herunterzuladen'],
+            correct: 1
+          }
         };
       }
 
@@ -104,12 +191,13 @@ export default function Home() {
         primary_recommendation: recommendation
       });
       setLoading(false);
-    }, 400);
+    }, 300);
   };
 
   const resetSearch = () => {
     setResults(null);
     setQuery('');
+    setCompletedSteps({});
   };
 
   return (
@@ -162,7 +250,7 @@ export default function Home() {
           </h1>
           
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
-            Gib einfach ein Thema ein und erhalte sofort handverlesene Top-Trainings ohne Registrierungshürden.
+            Gib einfach dein Wunschthema ein und lerne sofort direkt auf der Seite.
           </p>
 
           {/* Search Box */}
@@ -173,7 +261,7 @@ export default function Home() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Was willst du heute lernen? (z.B. Python, Excel, Storytelling)..."
+                placeholder="Was willst du heute lernen? (z.B. Persönlichkeitsentwicklung, Python, Zeitmanagement)..."
                 className="w-full bg-transparent px-4 py-2 text-sm text-slate-100 focus:outline-none placeholder-slate-500"
               />
               <button
@@ -190,10 +278,10 @@ export default function Home() {
           {/* Quick Filter Tags */}
           <div className="flex flex-wrap justify-center gap-2 pt-2">
             {[
+              "Persönlichkeitsentwicklung",
+              "Python Programmieren",
               "Harvard CS50",
-              "Python in 30 Min",
-              "Pixar Storytelling",
-              "Excel Masterclass"
+              "Pixar Storytelling"
             ].map((tag) => (
               <button
                 key={tag}
@@ -207,54 +295,86 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Live Search Results */}
-        {results && (
-          <div className="max-w-3xl mx-auto mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
-                ✨ train4free Mikro-Training
+        {/* Live Search Results / Interactive Micro-Learning Card */}
+        {results && results.primary_recommendation && (
+          <div className="max-w-3xl mx-auto mt-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <span className="text-xs font-semibold uppercase tracking-wider text-sky-400 flex items-center gap-2">
+                <span>✨</span> train4free Interactive Module
               </span>
               <button
                 type="button"
                 onClick={resetSearch}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg transition"
               >
                 ✕ Schließen
               </button>
             </div>
 
-            {results.primary_recommendation && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white">{results.primary_recommendation.title}</h3>
-                <div className="flex flex-wrap gap-4 text-xs text-slate-400">
-                  <span>🏛️ {results.primary_recommendation.provider}</span>
-                  <span>⏱️ {results.primary_recommendation.duration}</span>
-                  <span>🌍 {results.primary_recommendation.language}</span>
-                </div>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  {results.primary_recommendation.why_it_fits}
-                </p>
-
-                {/* Eingebettete Mikro-Lernschritte direkt auf der Seite */}
-                {results.primary_recommendation.steps && (
-                  <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">Deine Lerneinheiten für heute:</h4>
-                    {results.primary_recommendation.steps.map((step: string, idx: number) => (
-                      <p key={idx} className="text-sm text-slate-200 font-medium py-1 border-b border-slate-900 last:border-none">
-                        {step}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                <div className="pt-2 flex items-center justify-between">
-                  <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    100% Verinnerlicht – Direkt auf train4free absolviert
-                  </span>
-                </div>
+            <div className="space-y-4">
+              <h3 className="text-2xl font-extrabold text-white">
+                {results.primary_recommendation.title}
+              </h3>
+              
+              <div className="flex flex-wrap gap-3 text-xs text-slate-400">
+                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">🏛️ {results.primary_recommendation.provider}</span>
+                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">⏱️ {results.primary_recommendation.duration}</span>
+                <span className="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">🌍 {results.primary_recommendation.language}</span>
               </div>
-            )}
+
+              <p className="text-sm text-slate-300 leading-relaxed bg-slate-950/50 border border-slate-800/80 p-3.5 rounded-xl">
+                {results.primary_recommendation.summary}
+              </p>
+
+              {/* Interaktive Lernschritte */}
+              <div className="space-y-3 pt-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">
+                  Interaktive Lerneinheiten (Klicke zum Haken setzen):
+                </h4>
+                
+                {results.primary_recommendation.steps.map((step: any, idx: number) => {
+                  const isDone = completedSteps[idx];
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => toggleStep(idx)}
+                      className={`cursor-pointer p-4 rounded-xl border transition-all ${
+                        isDone
+                          ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
+                          : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-200'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-1">
+                          <h5 className={`font-bold text-sm ${isDone ? 'line-through text-emerald-400' : 'text-slate-100'}`}>
+                            {step.title}
+                          </h5>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            {step.detail}
+                          </p>
+                        </div>
+                        <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 text-xs ${
+                          isDone ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold' : 'border-slate-700 bg-slate-900 text-slate-500'
+                        }`}>
+                          {isDone ? '✓' : idx + 1}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Status Footer */}
+              <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-emerald-400 font-medium flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  100% On-Page absolviert – Keine externen Umleitungen
+                </span>
+                <span className="text-slate-500 font-mono">
+                  {Object.keys(completedSteps).filter(k => completedSteps[Number(k)]).length} / {results.primary_recommendation.steps.length} erledigt
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
