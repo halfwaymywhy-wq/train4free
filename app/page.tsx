@@ -73,28 +73,28 @@ export default function Home() {
         throw new Error('Keine Daten erhalten');
       }
     } catch (err) {
-      console.warn('Backend API aktuell nicht erreichbar oder im Fallback-Modus, erstelle dynamisches Curriculum:', err);
+      console.warn('Backend API aktuell im Fallback-Modus, generiere elegantes Direkt-Resultat:', err);
       
-      // Fallback-Generierung OHNE JEGLICHE GOOGLE-LINKS
+      // Schlankes, zielgerichtetes Ergebnis ohne Zwischenseiten-URLs
       const lowerQ = q.toLowerCase();
-      let title = `Verifizierte Bildungsressourcen zu "${q}"`;
-      let provider = '🏛️ Öffentliche Bildungsträger & Open Access';
-      let resource_url = 'https://www.vhs-lernportal.de';
-      let resource_label = 'Direkt zum vhs-Lernportal →';
-      let summary = `Live-Analyse für "${q}": Wir haben zertifizierte und gebührenfreie Lernangebote für dich aufbereitet.`;
+      let title = `Kostenloses Training zu "${q}"`;
+      let provider = '🏛️ Öffentliche Bildungsträger & Verifizierte Plattformen';
+      let resource_url = 'https://open.hpi.de';
+      let resource_label = 'Direkt zur Lernplattform →';
+      let summary = `Wir haben die passenden, gebührenfreien Bildungsressourcen zu "${q}" für dich gefiltert und aufbereitet.`;
 
       if (lowerQ.includes('deutsch') || lowerQ.includes('bamf') || lowerQ.includes('vhs') || lowerQ.includes('sprache')) {
-        title = 'Staatlich geförderte Integrations- & Sprachkurse (BAMF / DVV)';
-        provider = '🏛️ BAMF & Deutscher Volkshochschul-Verband';
-        summary = 'Kostenfreie Sprachkurse von A1 bis C1 sowie Berufssprachkurse von offiziellen Trägern.';
+        title = 'Geförderte Sprach- & Integrationskurse';
+        provider = '🏛️ vhs-Lernportal (Deutscher Volkshochschul-Verband)';
+        summary = 'Anerkannte Online-Kurse von A1 bis C1 inklusive Vorbereitung auf den Deutsch-Test für den Beruf.';
         resource_url = 'https://www.vhs-lernportal.de';
-        resource_label = 'Zum vhs-Lernportal (A1-C1) →';
+        resource_label = 'Direkt zum vhs-Lernportal →';
       } else if (lowerQ.includes('code') || lowerQ.includes('python') || lowerQ.includes('informatik') || lowerQ.includes('ki')) {
-        title = 'Zertifizierte IT- & Informatik-Kurse';
-        provider = '🏛️ Hasso-Plattner-Institut (OpenHPI) & Harvard';
-        summary = 'Kostenlose akademische IT-Qualifikationen mit verifizierbarem Leistungsnachweis.';
+        title = 'Zertifizierter IT- & Programmirkurs';
+        provider = '🏛️ Hasso-Plattner-Institut (OpenHPI) / Harvard';
+        summary = 'Interaktive Informatik-Konzepte und Übungen mit direktem Praxisbezug.';
         resource_url = 'https://open.hpi.de';
-        resource_label = 'Zu den OpenHPI-Kursen →';
+        resource_label = 'Direkt zu den OpenHPI Kursen →';
       }
 
       setResults({
@@ -102,22 +102,22 @@ export default function Home() {
         primary_recommendation: {
           title,
           provider,
-          duration: 'Flexibles Selbststudium',
+          duration: 'Flexibles Tempo',
           summary,
           resource_url,
           resource_label,
           steps: [
             {
-              title: `1. Grundkonzepte von ${q}`,
-              detail: 'Die wichtigsten Theorien und Begriffe auf einen Blick.',
-              fullContent: `• Erfasse die Kernmechanismen von ${q}.\n• Fokussiere dich auf praxisrelevante Grundlagen ohne Ballast.`,
-              example: 'Absolviere das Einführungsmodul und erstelle deine ersten Notizen.'
+              title: `1. Überblick & Grundlagen zu ${q}`,
+              detail: 'Die wichtigsten Kernbegriffe auf den Punkt gebracht.',
+              fullContent: `• Verstehe die wichtigsten Säulen von ${q}.\n• Baue dir ein solides Grundverständnis auf.`,
+              example: 'Lies die Einführung und mache deine ersten Notizen.'
             },
             {
-              title: '2. Praktische Anwendung & Reflexion',
-              detail: 'Direkte Umsetzung des erlernten Wissens.',
-              fullContent: `• Wende das Wissen in einer kleinen Praxisaufgabe an.\n• Nutze das Gelernte direkt in deinem Alltag oder Beruf.`,
-              example: 'Beantworte die Reflexionsfrage und hake das Modul als absolviert ab.'
+              title: '2. Praktische Umsetzung',
+              detail: 'Sofortige Anwendung des Gelernten.',
+              fullContent: `• Wende das Wissen direkt in einer kleinen Übung an.\n• Hake den Schritt als verstanden ab.`,
+              example: 'Beantworte die Kontrollfrage für deinen Lernerfolg.'
             }
           ]
         }
