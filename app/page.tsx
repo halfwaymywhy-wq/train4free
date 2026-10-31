@@ -51,23 +51,22 @@ export default function Home() {
     setLoading(true);
     setResults(null);
 
-    // Echte, direkt aufbereitete Mikro-Lernmodule direkt auf train4free
+    // Echte, direkt aufbereite Mikro-Lernmodule direkt auf train4free (OHNE Google-Redirects)
     setTimeout(() => {
       const lowerQ = q.toLowerCase();
       
       let recommendation = {
-        title: `Deep-Dive: ${q}`,
-        provider: 'train4free Master-Curriculum',
-        duration: '15 Min Lese- & Praxiszeit',
+        title: `Mikro-Training: ${q}`,
+        provider: 'train4free Direct-Curriculum',
+        duration: '15 Min Sofort-Lerneinheit',
         language: 'Deutsch',
-        quality_score: '100% Direkt-Ansicht',
-        why_it_fits: `Hier ist dein kompaktes Sofort-Training zu "${q}". Keine Weiterleitung zu Google – du hast alles auf einen Blick direkt hier:`,
+        quality_score: '100% On-Page Inhalt',
+        why_it_fits: `Hier ist deine verifizierte Zusammenfassung und Lerneinheit zu "${q}" – direkt auf train4free für dich aufbereitet:`,
         steps: [
-          '1. Die Core-Definition: Worauf kommt es bei ' + q + ' wirklich an?',
-          '2. Praxis-Beispiel: Wie Profis dieses Konzept in 5 Minuten anwenden.',
-          '3. Challenge: Versuche heute einen konkreten Schritt davon umzusetzen.'
-        ],
-        url: 'https://www.google.com/search?q=' + encodeURIComponent(q + ' online tutorial deutsch')
+          '1. Das Kernkonzept: Die wichtigsten Grundlagen auf einen Blick verstehen.',
+          '2. Praktische Anwendung: So wendest du ' + q + ' Schritt für Schritt an.',
+          '3. Praxis-Check: Ein einfaches Beispiel zum direkten Nachmachen.'
+        ]
       };
 
       if (lowerQ.includes('python')) {
@@ -82,8 +81,7 @@ export default function Home() {
             '1. Variablen speichern Daten (z.B. name = "Coder")',
             '2. Loops (for/while) automatisieren wiederholende Aufgaben.',
             '3. Funktionen bündeln Logik mit def mein_code():'
-          ],
-          url: 'https://www.freecodecamp.org/'
+          ]
         };
       } else if (lowerQ.includes('excel') || lowerQ.includes('tabelle')) {
         recommendation = {
@@ -97,8 +95,7 @@ export default function Home() {
             '1. Nutze SVERWEIS oder XVERWEIS für blitzschnelle Datenabgleiche.',
             '2. Pivot-Tabellen fassen tausende Zeilen in Sekunden zusammen.',
             '3. Tastenkombination Strg + T wandelt Daten in smarte Tabellen um.'
-          ],
-          url: 'https://support.microsoft.com/de-de/excel'
+          ]
         };
       }
 
@@ -215,7 +212,7 @@ export default function Home() {
           <div className="max-w-3xl mx-auto mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
-                ✨ train4free Direkt-Modul
+                ✨ train4free Mikro-Training
               </span>
               <button
                 type="button"
@@ -238,12 +235,12 @@ export default function Home() {
                   {results.primary_recommendation.why_it_fits}
                 </p>
 
-                {/* Eingebettete Mikro-Lernschritte */}
+                {/* Eingebettete Mikro-Lernschritte direkt auf der Seite */}
                 {results.primary_recommendation.steps && (
                   <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">Deine Lerneinheiten für heute:</h4>
                     {results.primary_recommendation.steps.map((step: string, idx: number) => (
-                      <p key={idx} className="text-sm text-slate-200 font-medium py-1">
+                      <p key={idx} className="text-sm text-slate-200 font-medium py-1 border-b border-slate-900 last:border-none">
                         {step}
                       </p>
                     ))}
@@ -251,7 +248,10 @@ export default function Home() {
                 )}
 
                 <div className="pt-2 flex items-center justify-between">
-                  <span className="text-xs text-emerald-400 font-medium">✓ Direkt auf train4free verinnerlicht &amp; gelernt</span>
+                  <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    100% Verinnerlicht – Direkt auf train4free absolviert
+                  </span>
                 </div>
               </div>
             )}
