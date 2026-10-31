@@ -138,32 +138,32 @@ export default function Home() {
       setResults({
         mode_used: 'LIVE_SEARCH_CURATED',
         courses,
-        primary_recommendation: {
-          title: `Interaktive Intensiv-Einheit: "${q}"`,
+        primary_recommendation: lowerQ.includes('json') ? {
+          title: `Kompakt-Kurs: JSON (JavaScript Object Notation)`,
           provider: 'train4free Direct-Curriculum',
-          duration: '15 Min Sofort-Lernen',
-          summary: `Hier ist dein kompaktes Briefing für "${q}". Lies die Einheiten durch, probiere die Aufgaben aus und markiere sie als gelernt.`,
+          duration: '10 Min Sofort-Lernen',
+          summary: `JSON ist das weltweit wichtigste Textformat zum Austausch von Daten zwischen Web-Anwendungen und Servern.`,
           steps: [
             {
-              title: `1. Grundverständnis & Kernprinzip von "${q}"`,
-              detail: 'Das Wichtigste auf den Punkt gebracht.',
-              fullContent: `📌 **Was ist ${q}?**\n${q} beschreibt die grundlegenden Methoden und Strategien in diesem Themenfeld. Es geht darum, Kernprobleme systematisch zu verstehen und effizient zu lösen.\n\n🔑 **Die 3 Säulen:**\n1. Verstehen der Grundlagen & Begriffe\n2. Gezielte Anwendung in der Praxis\n3. Regelmäßige Selbstkontrolle und Weiterentwicklung`,
-              example: `Erkläre die Grundidee von ${q} in 2 eigenen Sätzen.`
+              title: `1. Syntax & Aufbau von JSON`,
+              detail: 'Schlüssel-Wert-Paare und Datentypen verstehen.',
+              fullContent: `📌 **Was ist JSON?**\nJSON steht für JavaScript Object Notation. Es ist menschenlesbar und wird von fast allen Programmiersprachen unterstützt.\n\n🔑 **Die Regeln:**\n• Daten stehen in geschweiften Klammern \`{\` \`}\`.\n• Schlüssel sind IMMER in doppelten Anführungszeichen: \`"name": "Alex"\`.\n• Werte können Strings, Zahlen, Booleans (true/false), Arrays \`[]\` oder verschachtelte Objekte sein.\n\n💻 **Beispiel:**\n{\n  "name": "Maria",\n  "alter": 28,\n  "istKursteilnehmer": true,\n  "skills": ["HTML", "JSON"]\n}`,
+              example: `Welcher Fehler liegt hier vor: { name: "Max" } ? (Antwort: Schlüssel "name" muss in doppelten Anführungszeichen stehen!)`
             },
             {
-              title: '2. Schritt-für-Schritt Praxisanwendung',
-              detail: 'So wendest du das Wissen direkt an.',
-              fullContent: `🛠️ **Vorgehen im Alltag:**\n• Analyse der aktuellen Situation.\n• Anwendung von Best Practices für ${q}.\n• Vermeidung typischer Anfängerfehler (z.B. fehlende Struktur oder übereilte Schritte).`,
-              example: `Führe eine kurze 5-Minuten-Übung zu ${q} durch oder erstelle dir eine Checkliste.`
+              title: '2. Typische Anwendungsfälle in der Praxis',
+              detail: 'API-Datenaustausch und Konfigurationsdateien.',
+              fullContent: `🛠️ **Wo dir JSON im Alltag begegnet:**\n1. **REST APIs:** Wenn eine App Wetterdaten, Kurse oder Nutzerprofile von einem Server lädt.\n2. **Konfiguration:** Dateien wie \`package.json\` oder \`settings.json\` steuern Werkzeuge und Apps.\n3. **Keine Funktionen:** In JSON gibt es nur reine Daten, keinen ausführbaren Code!`,
+              example: `Erstelle gedanklich ein JSON-Objekt für deinen Lieblingskurs mit den Feldern "titel", "dauer" und "kostenlos".`
             },
             {
-              title: '3. Wissenscheck & Abschluss',
-              detail: 'Teste dein Verständnis.',
-              fullContent: `🎯 **Selbsttest:**\nKannst du das Gelernte ohne Nachschlagen zusammenfassen? Wenn ja, hast du das Fundament erfolgreich verstanden!`,
+              title: '3. Schneller Syntax-Check & Tools',
+              detail: 'Fehler in JSON sofort finden.',
+              fullContent: `🎯 **Validerung:**\nEin einzelnes fehlendes Komma macht eine JSON-Datei ungültig. Nutze im Browser kostenlose Tools wie **JSONLint.com** oder Entwickler-Konsolen, um JSON zu prüfen und formatiert darzustellen ("Pretty Print").`,
               example: 'Setze den Haken bei "Als gelernt markieren", um dieses Modul abzuschließen.'
             }
           ]
-        }
+        } : null
       });
     } finally {
       setLoading(false);
