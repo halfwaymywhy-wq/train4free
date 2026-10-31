@@ -44,9 +44,15 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [completedSteps, setCompletedSteps] = useState<{ [key: number]: boolean }>({});
+  const [openStep, setOpenStep] = useState<number | null>(0); // Erstes Modul standardmäßig offen
 
-  const toggleStep = (index: number) => {
+  const toggleStepDone = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation(); // Verhindert Auf-/Zuklappen beim Klick auf den Haken
     setCompletedSteps(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const toggleStepOpen = (index: number) => {
+    setOpenStep(prev => (prev === index ? null : index));
   };
 
   const handleSearch = async (searchQuery?: string) => {
@@ -56,26 +62,33 @@ export default function Home() {
     setLoading(true);
     setResults(null);
     setCompletedSteps({});
+    setOpenStep(0); // Öffne Modul 1 automatisch
 
-    // Dynamischer, robuster Generator für maßgeschneiderte Mikro-Lerneinheiten
+    // Dynamischer, tiefgehender Generator für echte Lerninhalte
     setTimeout(() => {
       const lowerQ = q.toLowerCase();
       
       let title = `Mikro-Training: ${q}`;
-      let summary = `Willkommen zu deinem Intensiv-Training für "${q}". Wir haben die Kernprinzipien, Methoden und Praxis-Anwendungen direkt für dich aufbereitet.`;
+      let summary = `Willkommen zu deinem Intensiv-Training für "${q}". Wir haben die wichtigsten Prinzipien, praxisnahe Erklärungen und konkrete Handlungsschritte direkt aufbereitet.`;
       
       let steps = [
         {
-          title: `1. Die Kernfundamente von ${q}`,
-          detail: `Verstehe die wichtigsten Grundlagen und Begrifflichkeiten von ${q}. Konzentriere dich auf die zentralen Konzepte, die den größten Impact haben.`
+          title: `1. Die Kernfundamente & Grundlagen von ${q}`,
+          detail: `Um ${q} wirklich zu verstehen, musst du das zugrundeliegende Prinzip erfassen.`,
+          fullContent: `Hier ist die Kernidee von ${q} auf den Punkt gebracht:\n\n• Was es ist: ${q} beschreibt die systematische Auseinandersetzung mit den Grundregeln dieses Themas.\n• Warum es wichtig ist: Wer die Grundlagen beherrscht, vermeidet 80% der typischen Anfängerfehler.\n• Praxistipp: Versuche nicht sofort alles perfekt zu machen, sondern konzentriere dich zuerst auf die Basis-Mechaniken.`,
+          example: `Denke an ein Fundament beim Hausbau: Ohne stabile Basis bricht das beste Wissen später zusammen.`
         },
         {
-          title: `2. Praktische Methodik & Schritt-für-Schritt Anwendung`,
-          detail: `Wende ${q} in der Praxis an. Erstelle konkrete Handlungsregeln oder Übungsszenarien für deinen Alltag.`
+          title: `2. Schritt-für-Schritt Anwendung im Alltag`,
+          detail: `Wie du ${q} konkret in deinem Tagesablauf umsetzt.`,
+          fullContent: `Konkreter Aktionsplan für ${q}:\n\n1. Identifiziere dein Ziel für heute bezüglich ${q}.\n2. Zerlege die Aufgabe in ein Mini-Häppchen von maximal 10 Minuten.\n3. Führe diese Mini-Handlung direkt aus, bevor Ablenkungen entstehen.\n4. Reflektiere kurz, was gut funktioniert hat.`,
+          example: `Beispiel: Statt dir vorzunehmen "Ich beherrsche ${q} komplett", mache heute nur die ersten 5 Minuten der praktischen Übung.`
         },
         {
           title: `3. Erfolgs-Check & Selbstreflexion`,
-          detail: `Prüfe dein Verständnis: Kannst du die Kernidee von ${q} in 2 Sätzen erklären und sofort in einem Praxisbeispiel nutzen?`
+          detail: `Überprüfe, ob du das Thema verinnerlicht hast.`,
+          fullContent: `Testfrage für dich:\n\nKannst du einem 10-jährigen Kind in 2 einfachen Sätzen erklären, was ${q} ist und warum es nützlich ist?\n\nWenn ja: Du hast das Thema gemeistert!\nWenn nein: Lies dir Modul 1 noch einmal in Ruhe durch.`,
+          example: `Echtes Verständnis zeigt sich nicht an komplizierten Fachwörtern, sondern an einfachen Erklärungen.`
         }
       ];
 
@@ -85,15 +98,21 @@ export default function Home() {
         steps = [
           {
             title: '1. Das Growth Mindset (Carol Dweck)',
-            detail: 'Unterscheide zwischen Fixed Mindset ("Ich kann das halt nicht") und Growth Mindset ("Ich kann das noch nicht"). Fehler sind keine Schwächen, sondern nötige Lernsignale des Gehirns.'
+            detail: 'Verstehe den Unterschied zwischen starrem und dynamischem Denken.',
+            fullContent: `• Fixed Mindset ("Statisch"): Glaubt, dass Talent angeboren ist. Fehler werden als persönliches Scheitern erlebt.\n• Growth Mindset ("Dynamisch"): Glaubt, dass Fähigkeiten durch Übung wachsen. Fehler sind wertvolles Feedback des Gehirns.\n\nMerksatz: Ersetze das Wort "Ich kann das nicht" immer durch "Ich kann das NOCH nicht".`,
+            example: 'Wenn etwas schiefgeht: Sag nicht "Ich bin zu blöd dafür", sondern "Interessant, was kann ich daraus lernen?"'
           },
           {
             title: '2. Atomic Habits: Die 1%-Methode',
-            detail: 'Setze dir nicht riesige Hürden, sondern baue Mikrogewohnheiten auf. Wer sich jeden Tag um 1% verbessert, ist nach einem Jahr 37-mal besser.'
+            detail: 'Warum kleine tägliche Verbesserungen gigantische Ergebnisse liefern.',
+            fullContent: `Vergiss riesige Neujahrsvorsätze. Wenn du dich jeden Tag nur um 1% verbesserst, bist du am Ende des Jahres 37-mal besser (1.01^365 = 37.8).\n\nSo baust du Habits auf:\n1. Mach es offensichtlich (Lernmaterial auf den Tisch legen).\n2. Mach es attraktiv (Mit Kaffee oder Lieblingsmusik koppeln).\n3. Mach es einfach (Nur 2 Minuten starten).`,
+            example: 'Lieber jeden Tag 5 Minuten konzentriert lernen als einmal im Monat 3 Stunden quälen.'
           },
           {
-            title: '3. Radikale Ausmistung von Ablenkungen',
-            detail: 'Schütze deine mentale Energie. Limitiere passiven Social-Media-Konsum und ersetze ihn durch gezielte Reflexions- oder Fokussier-Zeiten.'
+            title: '3. Fokus schützen & Ablenkungen eliminieren',
+            detail: 'Mentale Energie sparen und produktiv bleiben.',
+            fullContent: `Social Media und ständige Benachrichtigungen zerstückeln deine Konzentration. Echtes Lernen erfordert Deep Work (tiefes Arbeiten).\n\nÜbung für heute:\nSchalte dein Smartphone für die nächsten 20 Minuten in den Flugmodus und mache nur dieses eine Mikro-Training fertig.`,
+            example: 'Fokus ist keine Frage des Wollens, sondern der Gestaltung deiner Umgebung.'
           }
         ];
       } else if (lowerQ.includes('onboard') || lowerQ.includes('einarbeitung') || lowerQ.includes('hr')) {
@@ -102,15 +121,21 @@ export default function Home() {
         steps = [
           {
             title: '1. Die 3 Phasen: Preboarding, Tag 1 & Erster Monat',
-            detail: 'Schicke Hardware & Zugänge vor Tag 1. Tag 1 dient der Begrüßung und Kultur – nicht der Bürokratie. Monat 1 baut systematisch fachliche Autonomie auf.'
+            detail: 'Strukturierter Fahrplan vom Arbeitsvertrag bis zur Selbstständigkeit.',
+            fullContent: `• Preboarding (Vor Tag 1): Hardware, Zugänge und Willkommens-Mail vorab schicken. Das nimmt die Nervosität.\n• Tag 1 (Ankommen): Fokus auf Kultur, Begrüßung und Team – keine stundenlangen Bürokratie-Formulare!\n• Monat 1 (Autonomie): Schrittweise eigene Verantwortung übergeben mit wöchentlichen Feedback-Gesprächen.`,
+            example: 'Ein neuer Mitarbeiter, der am ersten Tag vor einem nicht funktionierenden Laptop sitzt, verliert 50% der Motivation.'
           },
           {
             title: '2. Das Buddy-System installieren',
-            detail: 'Stelle jedem Neuling einen festen Ansprechpartner zur Seite, der nicht der Chef ist. Das baut soziale Hürden und Hemmungen sofort ab.'
+            detail: 'Warum jeder Neuling einen Mentor auf Augenhöhe braucht.',
+            fullContent: `Stelle dem neuen Teammitglied einen "Buddy" an die Seite.\n\n• Wer ist das? Ein Kollege aus dem Team – explizit NICHT die Führungskraft.\n• Wozu dient das? Für all die "dummen Fragen" (Wo gibt es den besten Kaffee? Wie buche ich Urlaub?), die man dem Chef ungern stellt.`,
+            example: 'Das Buddy-System baut Hemmungen ab und beschleunigt das soziale Einleben um Wochen.'
           },
           {
-            title: '3. Klarheit durch 30-60-90-Tage-Pläne',
-            detail: 'Definiere für jeden Meilenstein klare Erwartungen und Lernziele. Regelmäßiges Feedback nach Woche 1, 4 und 12 sichert den langfristigen Erfolg.'
+            title: '3. Klarheit durch den 30-60-90-Tage-Plan',
+            detail: 'Erwartungen glasklar definieren.',
+            fullContent: `• Nach 30 Tagen: Der Neuling versteht die Werkzeuge und Prozesse.\n• Nach 60 Tagen: Erste eigene Teilprojekte werden selbstständig gelöst.\n• Nach 90 Tagen: Vollwertiges Teammitglied, das Feedback zur Optimierung gibt.`,
+            example: 'Regelmäßige Check-ins verhindern Frust auf beiden Seiten.'
           }
         ];
       } else if (lowerQ.includes('python') || lowerQ.includes('programmieren') || lowerQ.includes('code')) {
@@ -118,16 +143,22 @@ export default function Home() {
         summary = 'Python ist die verständlichste und mächtigste Sprache für KI, Datenanalyse und Webentwicklung.';
         steps = [
           {
-            title: '1. Variablen & Datentypen',
-            detail: 'Speichere Werte wie in Schubladen: name = "Alex" (Text/String), alter = 25 (Zahl/Integer). Python erkennt Typen automatisch.'
+            title: '1. Variablen & Datentypen verstehen',
+            detail: 'Wie Computer Werte im Speicher ablegen.',
+            fullContent: `In Python erstellst du Variablen einfach per Zuweisung:\n\nname = "Alex"      # String (Text)\nalter = 28         # Integer (Ganzzahl)\nis_student = True  # Boolean (Wahr/Falsch)\n\nPython erkennt den Datentyp automatisch!`,
+            example: 'Stell dir Variablen wie beschriftete Kisten vor, in die du Daten hineinlegst.'
           },
           {
-            title: '2. Schleifen (Loops) & Bedingungen',
-            detail: 'Nutze "if"-Abfragen für Entscheidungen und "for"-Schleifen, um Aufgaben automatisch zu wiederholen ohne doppelten Code.'
+            title: '2. Bedingungen & Entscheidungen (if/else)',
+            detail: 'Wie dein Code intelligente Entscheidungen trifft.',
+            fullContent: `alter = 20\nif alter >= 18:\n    print("Zutritt gewährt")\nelse:\n    print("Zutritt verwehrt")\n\nWichtig: In Python ist das Einrücken (4 Leerzeichen) Pflicht!`,
+            example: 'Ohne Einrückung weiß Python nicht, welcher Code zum if-Block gehört.'
           },
           {
-            title: '3. Funktionen schreiben',
-            detail: 'Bündele deine Logik mit "def mein_befehl():". So bleibt dein Programm sauber, wiederverwendbar und übersichtlich.'
+            title: '3. Schleifen (Loops) & Funktionen',
+            detail: 'Code wiederverwenden und Aufgaben automatisieren.',
+            fullContent: `Funktion definieren:\ndef begrüße(name):\n    return "Hallo " + name\n\n# Funktion aufrufen:\nprint(begrüße("Lisa"))  # Gibt "Hallo Lisa" aus`,
+            example: 'Mit Funktionen musst du denselben Code nie zweimal schreiben.'
           }
         ];
       }
@@ -136,7 +167,7 @@ export default function Home() {
         mode_used: 'DIRECT_MICRO_LEARNING',
         primary_recommendation: {
           title,
-          provider: 'train4free Direct-Curriculum',
+          provider: 'train4free Interactive Curriculum',
           duration: '15 Min Sofort-Lerneinheit',
           language: 'Deutsch',
           summary,
@@ -152,6 +183,7 @@ export default function Home() {
     setResults(null);
     setQuery('');
     setCompletedSteps({});
+    setOpenStep(0);
   };
 
   return (
@@ -301,36 +333,85 @@ export default function Home() {
               {/* Interaktive Lernschritte */}
               <div className="space-y-3 pt-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">
-                  Interaktive Lerneinheiten (Klicke zum Haken setzen):
+                  Interaktive Lerneinheiten (Klicke zum Öffnen / Lesen):
                 </h4>
                 
                 {results.primary_recommendation.steps.map((step: any, idx: number) => {
                   const isDone = completedSteps[idx];
+                  const isOpen = openStep === idx;
+
                   return (
                     <div
                       key={idx}
-                      onClick={() => toggleStep(idx)}
-                      className={`cursor-pointer p-4 rounded-xl border transition-all ${
+                      onClick={() => toggleStepOpen(idx)}
+                      className={`cursor-pointer rounded-xl border transition-all overflow-hidden ${
                         isDone
-                          ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
-                          : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-200'
+                          ? 'bg-emerald-950/20 border-emerald-500/30'
+                          : isOpen
+                          ? 'bg-slate-950 border-sky-500/60 shadow-lg'
+                          : 'bg-slate-950 border-slate-800 hover:border-slate-700'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="space-y-1">
-                          <h5 className={`font-bold text-sm ${isDone ? 'line-through text-emerald-400' : 'text-slate-100'}`}>
-                            {step.title}
-                          </h5>
-                          <p className="text-xs text-slate-400 leading-relaxed">
+                      {/* Modul Header */}
+                      <div className="p-4 flex items-start justify-between gap-3">
+                        <div className="space-y-1 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-sky-400 font-mono font-bold">
+                              {isOpen ? '▼' : '►'}
+                            </span>
+                            <h5 className={`font-bold text-sm ${isDone ? 'line-through text-emerald-400' : 'text-slate-100'}`}>
+                              {step.title}
+                            </h5>
+                          </div>
+                          <p className="text-xs text-slate-400 leading-relaxed pl-4">
                             {step.detail}
                           </p>
                         </div>
-                        <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 text-xs ${
-                          isDone ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold' : 'border-slate-700 bg-slate-900 text-slate-500'
-                        }`}>
+
+                        {/* Abhak-Button (Eigenständig) */}
+                        <button
+                          type="button"
+                          title={isDone ? 'Als unvollständig markieren' : 'Als verstanden / absolviert markieren'}
+                          onClick={(e) => toggleStepDone(e, idx)}
+                          className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 text-xs transition-transform active:scale-95 ${
+                            isDone
+                              ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-extrabold shadow-md shadow-emerald-500/20'
+                              : 'border-slate-700 bg-slate-900 text-slate-400 hover:border-sky-500'
+                          }`}
+                        >
                           {isDone ? '✓' : idx + 1}
-                        </div>
+                        </button>
                       </div>
+
+                      {/* Aufklappbarer echter Lerninhalt */}
+                      {isOpen && (
+                        <div className="px-4 pb-4 pt-1 border-t border-slate-800/80 bg-slate-900/40 text-xs space-y-3 animate-fadeIn">
+                          <div className="whitespace-pre-line text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-lg border border-slate-800 font-sans">
+                            {step.fullContent}
+                          </div>
+
+                          {step.example && (
+                            <div className="bg-sky-500/10 border border-sky-500/20 p-2.5 rounded-lg text-sky-300">
+                              <strong className="block font-semibold text-sky-400">💡 Praxis-Beispiel:</strong>
+                              {step.example}
+                            </div>
+                          )}
+
+                          <div className="flex justify-end pt-1">
+                            <button
+                              type="button"
+                              onClick={(e) => toggleStepDone(e, idx)}
+                              className={`text-xs px-3 py-1.5 rounded-md font-semibold transition ${
+                                isDone
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                  : 'bg-sky-500 hover:bg-sky-400 text-slate-950'
+                              }`}
+                            >
+                              {isDone ? '✓ Verstanden & Absolviert' : 'Modul als gelernt abhaken ✓'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -340,10 +421,10 @@ export default function Home() {
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs">
                 <span className="text-emerald-400 font-medium flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  100% On-Page absolviert – Keine externen Umleitungen
+                  100% On-Page Mikro-Training – Direkt lesen &amp; verinnerlichen
                 </span>
                 <span className="text-slate-500 font-mono">
-                  {Object.keys(completedSteps).filter(k => completedSteps[Number(k)]).length} / {results.primary_recommendation.steps.length} erledigt
+                  {Object.keys(completedSteps).filter(k => completedSteps[Number(k)]).length} / {results.primary_recommendation.steps.length} absolviert
                 </span>
               </div>
             </div>
