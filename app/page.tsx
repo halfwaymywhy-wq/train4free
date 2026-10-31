@@ -2,6 +2,43 @@
 
 import React, { useState } from 'react';
 
+// Handverlesene Highlight-Trainings als Fallback und Startseiten-Inspiration
+const FEATURED_COURSES = [
+  {
+    id: 'harvard-cs50',
+    title: 'CS50: Computer Science & Programming',
+    provider: 'Harvard University',
+    duration: 'Ca. 12 Std (Selbststudium)',
+    badge: '🏆 Elite-Klassiker',
+    category: 'Tech & Code',
+    description: 'Der weltweit beste Einführungskurs in Algorithmen, Denken wie ein Programmierer und Informatik-Grundlagen. Komplett frei zugänglich.',
+    url: 'https://pll.harvard.edu/course/cs50-introduction-computer-science',
+    icon: '🏛️'
+  },
+  {
+    id: 'pixar-storytelling',
+    title: 'Pixar in a Box: The Art of Storytelling',
+    provider: 'Khan Academy / Pixar',
+    duration: '2-4 Stunden',
+    badge: '🎨 Creative Champion',
+    category: 'Softskills & Creative',
+    description: 'Lerne direkt von den Machern von Toy Story und Findet Nemo, wie man fesselnde Charaktere, Welten und Geschichten baut.',
+    url: 'https://www.khanacademy.org/computing/pixar/storytelling',
+    icon: '🎬'
+  },
+  {
+    id: 'google-prompt-engineering',
+    title: 'Prompt Engineering & Prompting Guide',
+    provider: 'DAIR.AI / Open Access',
+    duration: '45 Minuten Quick-Start',
+    badge: '⚡ KI Top-Skill',
+    category: 'AI & Future Skills',
+    description: 'Masterclass für effektive Prompts. Lerne, wie du KI-Modelle wie Gemini oder ChatGPT wie ein Profi steuerst.',
+    url: 'https://www.promptingguide.ai/de',
+    icon: '🧠'
+  }
+];
+
 export default function Home() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +62,7 @@ export default function Home() {
         setResults(data.data);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Suche fehlgeschlagen:', err);
     } finally {
       setLoading(false);
     }
@@ -43,10 +80,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button
             type="button"
-            className="flex items-center space-x-3 text-left focus:outline-none"
+            className="flex items-center space-x-3 text-left focus:outline-none group"
             onClick={resetSearch}
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-sky-500/20">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
               t4f
             </div>
             <div>
@@ -72,7 +109,7 @@ export default function Home() {
       <main className="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
         {/* Hero & Search Section */}
         <div className="text-center max-w-3xl mx-auto my-6 sm:my-10 space-y-6">
-          <div className="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-300">
+          <div className="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-300 shadow-inner">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>Lese ich heute ein Buch oder mache ich lieber ein Training?</span>
           </div>
@@ -113,16 +150,16 @@ export default function Home() {
           {/* Quick Filter Tags */}
           <div className="flex flex-wrap justify-center gap-2 pt-2">
             {[
-              "Elite Bucket-List: Harvard & MIT",
+              "Harvard CS50",
               "Python in 30 Min",
               "Pixar Storytelling",
-              "Scrum Master Quick-Check"
+              "Prompt Engineering Quick-Check"
             ].map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => { setQuery(tag); handleSearch(tag); }}
-                className="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-full px-3 py-1.5 transition"
+                className="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-full px-3 py-1.5 transition hover:border-sky-500/50"
               >
                 ⚡ {tag}
               </button>
@@ -130,7 +167,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Results Area */}
+        {/* Live Search Results */}
         {results && (
           <div className="max-w-3xl mx-auto mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -166,6 +203,61 @@ export default function Home() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Curated Highlights Feed (Sichtbar wenn noch nicht gesucht wurde) */}
+        {!results && (
+          <section className="mt-12 sm:mt-16 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+              <div>
+                <h2 className="text-lg font-bold text-white tracking-tight">
+                  Handverlesene Highlight-Trainings
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Sofort starten ohne Registrierungshürden
+                </p>
+              </div>
+              <span className="text-xs text-slate-500 font-mono">3 Top-Picks</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {FEATURED_COURSES.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-slate-900/80 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex flex-col justify-between transition group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-xl">{course.icon}</span>
+                      <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full font-medium">
+                        {course.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-slate-100 group-hover:text-sky-400 transition-colors">
+                      {course.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      {course.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                    <span className="text-slate-500">{course.provider}</span>
+                    <a
+                      href={course.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sky-400 font-semibold hover:underline"
+                    >
+                      Starten →
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </main>
 
