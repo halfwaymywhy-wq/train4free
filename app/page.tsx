@@ -96,6 +96,23 @@ export default function Home() {
             detail: 'Schütze deine mentale Energie. Limitiere passiven Social-Media-Konsum und ersetze ihn durch gezielte Reflexions- oder Fokussier-Zeiten.'
           }
         ];
+      } else if (lowerQ.includes('onboard') || lowerQ.includes('einarbeitung') || lowerQ.includes('hr')) {
+        title = 'Exzellentes Onboarding & Einarbeitung';
+        summary = 'Ein gelungenes Onboarding entscheidet in den ersten 90 Tagen über Motivation, Bindung und Produktivität neuer Teammitglieder.';
+        steps = [
+          {
+            title: '1. Die 3 Phasen: Preboarding, Tag 1 & Erster Monat',
+            detail: 'Schicke Hardware & Zugänge vor Tag 1. Tag 1 dient der Begrüßung und Kultur – nicht der Bürokratie. Monat 1 baut systematisch fachliche Autonomie auf.'
+          },
+          {
+            title: '2. Das Buddy-System installieren',
+            detail: 'Stelle jedem Neuling einen festen Ansprechpartner zur Seite, der nicht der Chef ist. Das baut soziale Hürden und Hemmungen sofort ab.'
+          },
+          {
+            title: '3. Klarheit durch 30-60-90-Tage-Pläne',
+            detail: 'Definiere für jeden Meilenstein klare Erwartungen und Lernziele. Regelmäßiges Feedback nach Woche 1, 4 und 12 sichert den langfristigen Erfolg.'
+          }
+        ];
       } else if (lowerQ.includes('python') || lowerQ.includes('programmieren') || lowerQ.includes('code')) {
         title = 'Python Programmier-Fundament';
         summary = 'Python ist die verständlichste und mächtigste Sprache für KI, Datenanalyse und Webentwicklung.';
@@ -123,6 +140,7 @@ export default function Home() {
           duration: '15 Min Sofort-Lerneinheit',
           language: 'Deutsch',
           summary,
+          resource_url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q + ' kostenloser kurs tutorial deutsch')}`,
           steps
         }
       });
@@ -261,6 +279,24 @@ export default function Home() {
               <p className="text-sm text-slate-300 leading-relaxed bg-slate-950/50 border border-slate-800/80 p-3.5 rounded-xl">
                 {results.primary_recommendation.summary}
               </p>
+
+              {/* Empfohlene Gratis-Ressource */}
+              {results.primary_recommendation.resource_url && (
+                <div className="bg-slate-950 p-3.5 rounded-xl border border-sky-500/20 flex items-center justify-between gap-3">
+                  <div className="text-xs">
+                    <span className="font-bold text-sky-400 block">🎥 Empfohlener Gratis-Videokurs &amp; Ressourcen:</span>
+                    <span className="text-slate-400">Direkt auf geprüfte kostenlose Videokurse &amp; Materialien zugreifen.</span>
+                  </div>
+                  <a
+                    href={results.primary_recommendation.resource_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg transition shrink-0"
+                  >
+                    Kurs öffnen →
+                  </a>
+                </div>
+              )}
 
               {/* Interaktive Lernschritte */}
               <div className="space-y-3 pt-2">
