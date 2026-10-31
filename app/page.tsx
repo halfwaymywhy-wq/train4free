@@ -31,23 +31,33 @@ export default function Home() {
     }
   };
 
+  const resetSearch = () => {
+    setResults(null);
+    setQuery('');
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans selection:bg-sky-500 selection:text-slate-950">
       {/* Header */}
       <header className="border-b border-slate-800/80 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div
-            className="flex items-center space-x-3 cursor-pointer"
-            onClick={() => { setResults(null); setQuery(''); }}
+          <button
+            type="button"
+            className="flex items-center space-x-3 text-left focus:outline-none"
+            onClick={resetSearch}
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-sky-500/20">
               t4f
             </div>
             <div>
-              <span className="font-extrabold text-lg tracking-tight">train<span className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">4free</span></span>
-              <span className="hidden sm:inline-block text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5 ml-2 font-medium">100% Free & No Paywalls</span>
+              <span className="font-extrabold text-lg tracking-tight">
+                train<span className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">4free</span>
+              </span>
+              <span className="hidden sm:inline-block text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5 ml-2 font-medium">
+                100% Free &amp; No Paywalls
+              </span>
             </div>
-          </div>
+          </button>
           
           <div className="flex items-center space-x-3 text-sm">
             <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700/60 text-xs font-medium text-slate-300">
@@ -68,8 +78,10 @@ export default function Home() {
           </div>
           
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight leading-tight">
-            Kostenloses Wissen.<br/>
-            <span className="bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">In Minuten konsumiert. 0% Paywalls.</span>
+            Kostenloses Wissen.<br />
+            <span className="bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              In Minuten konsumiert. 0% Paywalls.
+            </span>
           </h1>
           
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
@@ -88,6 +100,7 @@ export default function Home() {
                 className="w-full bg-transparent px-4 py-2 text-sm text-slate-100 focus:outline-none placeholder-slate-500"
               />
               <button
+                type="button"
                 onClick={() => handleSearch()}
                 disabled={loading}
                 className="bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md flex items-center space-x-2 shrink-0 disabled:opacity-50"
@@ -107,6 +120,7 @@ export default function Home() {
             ].map((tag) => (
               <button
                 key={tag}
+                type="button"
                 onClick={() => { setQuery(tag); handleSearch(tag); }}
                 className="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-full px-3 py-1.5 transition"
               >
