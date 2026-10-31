@@ -51,7 +51,7 @@ train4free
       <div className="flex items-center space-x-3 text-sm">
         <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700/60 text-xs font-medium text-slate-300">
           <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-          <span>Powered by <strong class="text-white font-semibold">Gemini AI</strong></span>
+          <span>Powered by <strong className="text-white font-semibold">Gemini AI</strong></span>
         </div>
       </div>
     </div>
