@@ -38,13 +38,20 @@ return (
 {/* Header */}
 
 
-<div className="flex items-center space-x-3 cursor-pointer" onClick={() => { setResults(null); setQuery(''); }}>
+<div
+className="flex items-center space-x-3 cursor-pointer"
+onClick={() => { setResults(null); setQuery(''); }}
+>
 
 t4f
 
 
+
 train4free
+
+
 100% Free & No Paywalls
+
 
 
 
