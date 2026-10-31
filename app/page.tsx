@@ -205,7 +205,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Curated Highlights Feed (Sichtbar wenn noch nicht gesucht wurde) */}
+        {/* Curated Highlights Feed */}
         {!results && (
           <section className="mt-12 sm:mt-16 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
