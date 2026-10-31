@@ -75,33 +75,34 @@ export default function Home() {
     } catch (err) {
       console.warn('Backend API aktuell im Fallback-Modus, generiere elegantes Direkt-Resultat:', err);
       
-      // Schlankes, zielgerichtetes Ergebnis mit mehreren Top-Bildungsangeboten
       const lowerQ = q.toLowerCase();
-      
+      const encodedQ = encodeURIComponent(q);
+
+      // Dynamische Erzeugung von zielgerichteten Links zu echten Bildungsplattformen
       let courses = [
         {
-          title: `Geprüfter Online-Kurs: ${q} für Einsteiger`,
-          provider: '🏛️ Hasso-Plattner-Institut (OpenHPI)',
-          duration: 'Ca. 4–6 Stunden',
-          summary: `Interaktiver Selbstlernkurs zu ${q} mit theoretischen Grundlagen und praktischen Übungen.`,
-          resource_url: 'https://open.hpi.de',
-          resource_label: 'Direkt zu OpenHPI →'
+          title: `Kurse & Vorlesungen zu "${q}"`,
+          provider: '🏛️ edX / Coursera Free Access',
+          duration: 'Flexibles Tempo',
+          summary: `Direkte Übersicht aller gebührenfreien Universitätskurse und Vorlesungen zum Thema ${q}.`,
+          resource_url: `https://www.coursera.org/search?query=${encodedQ}`,
+          resource_label: 'Auf Coursera durchsuchen →'
         },
         {
-          title: `${q} Akademischer Intensivkurs (Free Audit)`,
-          provider: '🎓 Coursera / edX Open Access',
-          duration: 'Flexibles Tempo (Ca. 10 Std.)',
-          summary: 'Kostenfreier Zugriff auf sämtliche Lehrmaterialien und Videos renommierter Hochschulen.',
-          resource_url: 'https://www.coursera.org',
-          resource_label: 'Auf Coursera lernen →'
+          title: `Praxis-Leitfaden & Dokumentation: ${q}`,
+          provider: '📚 FreeCodeCamp / DevDocs Open Access',
+          duration: 'Quick-Start & Tutorials',
+          summary: `Interaktive Anleitungen, Praxisbeispiele und Spickzettel für ${q}.`,
+          resource_url: `https://devdocs.io/#q=${encodedQ}`,
+          resource_label: 'Anleitung & Tutorials öffnen →'
         },
         {
-          title: `${q} Praxis-Guide & Interaktive Dokumentation`,
-          provider: '🌐 Developer/Public Open Access Guide',
-          duration: '30 Min Quick-Start',
-          summary: 'Strukturierte Step-by-Step Anleitung für die direkte Anwendung im Alltag.',
-          resource_url: 'https://devdocs.io',
-          resource_label: 'Anleitung öffnen →'
+          title: `Kostenlose Online-Kurse auf OpenHPI`,
+          provider: '🎓 Hasso-Plattner-Institut',
+          duration: 'Selbststudium (Zertifikat)',
+          summary: `Suche im HPI-Katalog nach zertifizierten deutschsprachigen KI-, IT- und Digital-Kursen.`,
+          resource_url: `https://open.hpi.de/courses?q=${encodedQ}`,
+          resource_label: 'Zu OpenHPI Kurse →'
         }
       ];
 
@@ -138,22 +139,28 @@ export default function Home() {
         mode_used: 'LIVE_SEARCH_CURATED',
         courses,
         primary_recommendation: {
-          title: `Interaktiver Lernpfad zu "${q}"`,
+          title: `Interaktive Intensiv-Einheit: "${q}"`,
           provider: 'train4free Direct-Curriculum',
-          duration: 'Sofort-Lerneinheiten',
-          summary: `Du möchtest sofort mit ${q} loslegen? Hier sind deine ersten Schritte direkt auf unserer Plattform:`,
+          duration: '15 Min Sofort-Lernen',
+          summary: `Hier ist dein kompaktes Briefing für "${q}". Lies die Einheiten durch, probiere die Aufgaben aus und markiere sie als gelernt.`,
           steps: [
             {
-              title: `1. Die Kernkonzepte von ${q}`,
-              detail: 'Die wichtigsten Grundlagen auf einen Blick verstehen.',
-              fullContent: `• Die essenziellen Bausteine und Konzepte von ${q}.\n• Warum dieses Thema heute so relevant ist.`,
-              example: 'Lies die Zusammenfassung und präge dir die 3 wichtigsten Fachbegriffe ein.'
+              title: `1. Grundverständnis & Kernprinzip von "${q}"`,
+              detail: 'Das Wichtigste auf den Punkt gebracht.',
+              fullContent: `📌 **Was ist ${q}?**\n${q} beschreibt die grundlegenden Methoden und Strategien in diesem Themenfeld. Es geht darum, Kernprobleme systematisch zu verstehen und effizient zu lösen.\n\n🔑 **Die 3 Säulen:**\n1. Verstehen der Grundlagen & Begriffe\n2. Gezielte Anwendung in der Praxis\n3. Regelmäßige Selbstkontrolle und Weiterentwicklung`,
+              example: `Erkläre die Grundidee von ${q} in 2 eigenen Sätzen.`
             },
             {
-              title: '2. Praktische Anwendung & Übung',
-              detail: 'Schritt-für-Schritt Umsetzung im Alltag.',
-              fullContent: `• Wende das Gelernte in einem einfachen Praxisszenario an.\n• Nutze Checklisten, um deinen Wissensstand zu testen.`,
-              example: 'Absolviere die kleine Selbstkontroll-Aufgabe.'
+              title: '2. Schritt-für-Schritt Praxisanwendung',
+              detail: 'So wendest du das Wissen direkt an.',
+              fullContent: `🛠️ **Vorgehen im Alltag:**\n• Analyse der aktuellen Situation.\n• Anwendung von Best Practices für ${q}.\n• Vermeidung typischer Anfängerfehler (z.B. fehlende Struktur oder übereilte Schritte).`,
+              example: `Führe eine kurze 5-Minuten-Übung zu ${q} durch oder erstelle dir eine Checkliste.`
+            },
+            {
+              title: '3. Wissenscheck & Abschluss',
+              detail: 'Teste dein Verständnis.',
+              fullContent: `🎯 **Selbsttest:**\nKannst du das Gelernte ohne Nachschlagen zusammenfassen? Wenn ja, hast du das Fundament erfolgreich verstanden!`,
+              example: 'Setze den Haken bei "Als gelernt markieren", um dieses Modul abzuschließen.'
             }
           ]
         }
@@ -274,7 +281,7 @@ export default function Home() {
           <div className="max-w-3xl mx-auto mt-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
-                ✨ train4free Mikro-Training
+                ✨ Gefundene Kostenlose Trainings &amp; Kurse
               </span>
               <button
                 type="button"
@@ -285,11 +292,52 @@ export default function Home() {
               </button>
             </div>
 
-            {results.primary_recommendation && (
+            {/* NEU: Rendering der echten Kurslinks */}
+            {results.courses && results.courses.length > 0 && (
               <div className="space-y-4">
+                <h4 className="text-sm font-bold text-slate-200">
+                  🎯 Top-Empfehlungen von verifizierten Trägern &amp; Anbietern:
+                </h4>
+                <div className="grid grid-cols-1 gap-3">
+                  {results.courses.map((course: any, cIdx: number) => (
+                    <div
+                      key={cIdx}
+                      className="p-4 bg-slate-950/80 border border-slate-800 hover:border-sky-500/50 rounded-xl flex flex-col justify-between space-y-3 transition group"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-bold text-sm text-slate-100 group-hover:text-sky-400 transition-colors">
+                            {course.title}
+                          </h5>
+                          <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md border border-slate-700">
+                            {course.duration}
+                          </span>
+                        </div>
+                        <p className="text-xs font-medium text-sky-400/90">{course.provider}</p>
+                        <p className="text-xs text-slate-400 leading-relaxed pt-1">{course.summary}</p>
+                      </div>
+
+                      <div className="pt-2 flex justify-end">
+                        <a
+                          href={course.resource_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg transition inline-flex items-center space-x-1 shadow-md"
+                        >
+                          <span>{course.resource_label || 'Zum Kurs →'}</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {results.primary_recommendation && (
+              <div className="space-y-4 border-t border-slate-800/80 pt-6">
                 <div>
-                  <h3 className="text-xl font-bold text-white">{results.primary_recommendation.title}</h3>
-                  <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-2">
+                  <h3 className="text-lg font-bold text-white">{results.primary_recommendation.title}</h3>
+                  <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-1">
                     <span className="bg-slate-800 border border-slate-700 px-2 py-1 rounded-md">{results.primary_recommendation.provider}</span>
                     <span className="bg-slate-800 border border-slate-700 px-2 py-1 rounded-md">⏱️ {results.primary_recommendation.duration}</span>
                   </div>
@@ -298,21 +346,6 @@ export default function Home() {
                 <p className="text-sm text-slate-300 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 leading-relaxed">
                   {results.primary_recommendation.summary}
                 </p>
-
-                {/* Direkter Link zur zertifizierten Quelle falls vorhanden */}
-                {results.primary_recommendation.resource_url && (
-                  <div className="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-xl flex items-center justify-between">
-                    <span className="text-xs text-emerald-300 font-medium">Offizielles Bildungs-Portal verifiziert</span>
-                    <a
-                      href={results.primary_recommendation.resource_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg transition"
-                    >
-                      {results.primary_recommendation.resource_label}
-                    </a>
-                  </div>
-                )}
 
                 {/* Interaktive Lerneinheiten */}
                 <div className="space-y-3 pt-2">
