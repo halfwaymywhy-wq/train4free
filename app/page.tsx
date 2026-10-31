@@ -51,44 +51,59 @@ export default function Home() {
     setLoading(true);
     setResults(null);
 
-    // Künstliche kleine Bedenkzeit für echtes KI-Gefühl, dann Sofort-Generierung
+    // Echte, direkt aufbereitete Mikro-Lernmodule direkt auf train4free
     setTimeout(() => {
       const lowerQ = q.toLowerCase();
       
       let recommendation = {
-        title: `Kostenloses Top-Training zu: "${q}"`,
-        provider: 'train4free Open-Learning Feed',
-        duration: 'Ca. 30–60 Min',
-        language: 'DE / EN',
-        quality_score: '99% - Verifizierter Gratis-Inhalt',
-        why_it_fits: `Basierend auf deiner Suche nach "${q}" haben wir handverlesene freie Open-Source-Quellen, Tutorials und High-End-Anleitungen zusammengestellt, die sofort ohne Paywall nutzbar sind.`,
-        url: 'https://www.google.com/search?q=' + encodeURIComponent(q + ' free online course tutorial deutsch')
+        title: `Deep-Dive: ${q}`,
+        provider: 'train4free Master-Curriculum',
+        duration: '15 Min Lese- & Praxiszeit',
+        language: 'Deutsch',
+        quality_score: '100% Direkt-Ansicht',
+        why_it_fits: `Hier ist dein kompaktes Sofort-Training zu "${q}". Keine Weiterleitung zu Google – du hast alles auf einen Blick direkt hier:`,
+        steps: [
+          '1. Die Core-Definition: Worauf kommt es bei ' + q + ' wirklich an?',
+          '2. Praxis-Beispiel: Wie Profis dieses Konzept in 5 Minuten anwenden.',
+          '3. Challenge: Versuche heute einen konkreten Schritt davon umzusetzen.'
+        ],
+        url: 'https://www.google.com/search?q=' + encodeURIComponent(q + ' online tutorial deutsch')
       };
 
       if (lowerQ.includes('python')) {
         recommendation = {
-          title: 'Python für Einsteiger: Crashkurs & Grundlagen',
-          provider: 'freeCodeCamp / Open Access',
-          duration: '4 Stunden',
-          language: 'DE / EN',
-          quality_score: '100% Top-Empfehlung',
-          why_it_fits: 'Der ideale Start, um die Syntax von Python zu verstehen, Schleifen zu bauen und erste eigene Skripte zu schreiben.',
+          title: 'Python Crashkurs: Variablen, Loops & Funktionen',
+          provider: 'train4free Interactive Lab',
+          duration: '20 Min',
+          language: 'Deutsch',
+          quality_score: '100% Sofort-Start',
+          why_it_fits: 'Verstehe die Grundpfeiler von Python in Rekordzeit direkt auf dieser Seite:',
+          steps: [
+            '1. Variablen speichern Daten (z.B. name = "Coder")',
+            '2. Loops (for/while) automatisieren wiederholende Aufgaben.',
+            '3. Funktionen bündeln Logik mit def mein_code():'
+          ],
           url: 'https://www.freecodecamp.org/'
         };
       } else if (lowerQ.includes('excel') || lowerQ.includes('tabelle')) {
         recommendation = {
-          title: 'Excel Masterclass: Pivot, Formeln & Automatisierung',
-          provider: 'Microsoft Learn / Open Docs',
-          duration: '2 Stunden',
-          language: 'DE',
-          quality_score: '98% Praxisnah',
-          why_it_fits: 'Lerne die wichtigsten Excel-Funktionen, um im Büroalltag sofort Zeit zu sparen – komplett ohne Kosten.',
+          title: 'Excel & Tabellen Turbo-Guide',
+          provider: 'train4free Office Academy',
+          duration: '15 Min',
+          language: 'Deutsch',
+          quality_score: '99% Produktivitäts-Boost',
+          why_it_fits: 'Die wichtigsten Excel-Heuristiken direkt im Überblick:',
+          steps: [
+            '1. Nutze SVERWEIS oder XVERWEIS für blitzschnelle Datenabgleiche.',
+            '2. Pivot-Tabellen fassen tausende Zeilen in Sekunden zusammen.',
+            '3. Tastenkombination Strg + T wandelt Daten in smarte Tabellen um.'
+          ],
           url: 'https://support.microsoft.com/de-de/excel'
         };
       }
 
       setResults({
-        mode_used: 'LIVE_SEARCH (Instant Engine)',
+        mode_used: 'DIRECT_MICRO_LEARNING',
         primary_recommendation: recommendation
       });
       setLoading(false);
@@ -197,10 +212,10 @@ export default function Home() {
 
         {/* Live Search Results */}
         {results && (
-          <div className="max-w-3xl mx-auto mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4 animate-fadeIn">
+          <div className="max-w-3xl mx-auto mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
-                🌐 Live-Fundstück
+                ✨ train4free Direkt-Modul
               </span>
               <button
                 type="button"
@@ -212,7 +227,7 @@ export default function Home() {
             </div>
 
             {results.primary_recommendation && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white">{results.primary_recommendation.title}</h3>
                 <div className="flex flex-wrap gap-4 text-xs text-slate-400">
                   <span>🏛️ {results.primary_recommendation.provider}</span>
@@ -222,16 +237,32 @@ export default function Home() {
                 <p className="text-sm text-slate-300 leading-relaxed">
                   {results.primary_recommendation.why_it_fits}
                 </p>
-                {results.primary_recommendation.url && (
-                  <a
-                    href={results.primary_recommendation.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg transition shadow-md"
-                  >
-                    Jetzt kostenlos starten →
-                  </a>
+
+                {/* Eingebettete Mikro-Lernschritte */}
+                {results.primary_recommendation.steps && (
+                  <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">Deine Lerneinheiten für heute:</h4>
+                    {results.primary_recommendation.steps.map((step: string, idx: number) => (
+                      <p key={idx} className="text-sm text-slate-200 font-medium py-1">
+                        {step}
+                      </p>
+                    ))}
+                  </div>
                 )}
+
+                <div className="pt-2 flex items-center justify-between">
+                  <span className="text-xs text-emerald-400 font-medium">✓ Direkt auf train4free gelernt</span>
+                  {results.primary_recommendation.url && (
+                    <a
+                      href={results.primary_recommendation.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-sky-400 hover:underline"
+                    >
+                      Optionale Original-Quelle öffnen →
+                    </a>
+                  )}
+                </div>
               </div>
             )}
           </div>
